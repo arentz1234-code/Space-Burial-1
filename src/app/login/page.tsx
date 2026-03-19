@@ -5,9 +5,9 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import StarField from "@/components/shared/StarField";
-import { Lock, AlertCircle, FileText } from "lucide-react";
+import { Rocket, AlertCircle, Sparkles } from "lucide-react";
 
-export default function InvestorLogin() {
+export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -29,16 +29,11 @@ export default function InvestorLogin() {
       const data = await res.json();
 
       if (res.ok && data.redirect) {
-        // Only allow investors to access investor dashboard
-        if (data.user.role === "investor") {
-          router.push("/investor/dashboard");
-        } else {
-          setError("This login is for investors only. Please use the main login.");
-        }
+        router.push(data.redirect);
       } else if (data.error === "NDA_REQUIRED") {
-        router.push(`/investor/signup?userId=${data.userId}`);
+        setError("Please sign the NDA before accessing your account.");
       } else {
-        setError("Invalid credentials. Try demo@spaceburial.com / investor123");
+        setError("Invalid credentials. Please try again.");
       }
     } catch {
       setError("Something went wrong. Please try again.");
@@ -57,14 +52,14 @@ export default function InvestorLogin() {
           className="w-full max-w-md"
         >
           <div className="text-center mb-8">
-            <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-cosmic-gold/20 flex items-center justify-center">
-              <Lock className="w-8 h-8 text-cosmic-gold" />
+            <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-nebula-500/20 flex items-center justify-center">
+              <Rocket className="w-8 h-8 text-nebula-400" />
             </div>
             <h1 className="font-heading text-2xl tracking-wider mb-2">
-              Investor Portal
+              Welcome Back
             </h1>
             <p className="text-cosmic-white/50 text-sm">
-              Accredited investors only. Enter your credentials.
+              Sign in to access your Space Burial account
             </p>
           </div>
 
@@ -85,8 +80,8 @@ export default function InvestorLogin() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-cosmic-white focus:outline-none focus:border-cosmic-gold/50 transition-colors"
-                placeholder="investor@example.com"
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-cosmic-white focus:outline-none focus:border-nebula-500 transition-colors"
+                placeholder="you@example.com"
               />
             </div>
 
@@ -99,7 +94,7 @@ export default function InvestorLogin() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-cosmic-white focus:outline-none focus:border-cosmic-gold/50 transition-colors"
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-cosmic-white focus:outline-none focus:border-nebula-500 transition-colors"
                 placeholder="••••••••"
               />
             </div>
@@ -107,29 +102,34 @@ export default function InvestorLogin() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 px-6 rounded-xl font-heading tracking-wider text-sm bg-gradient-to-r from-cosmic-gold to-yellow-500 text-space-black hover:opacity-90 transition-opacity disabled:opacity-50"
+              className="btn-primary w-full disabled:opacity-50"
             >
               {loading ? "Signing in..." : "Sign In"}
             </button>
 
-            <p className="text-center text-xs text-cosmic-white/30">
-              Demo: demo@spaceburial.com / investor123
-            </p>
+            <div className="border-t border-white/10 pt-6">
+              <p className="text-center text-xs text-cosmic-white/30 mb-4">
+                Demo Accounts
+              </p>
+              <div className="space-y-2 text-xs text-cosmic-white/50">
+                <div className="flex items-center gap-2">
+                  <Sparkles className="w-3 h-3 text-cosmic-gold" />
+                  <span>Admin: admin@spaceburial.com / admin123</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Rocket className="w-3 h-3 text-nebula-400" />
+                  <span>Immortal: eternal@example.com / eternal123</span>
+                </div>
+              </div>
+            </div>
           </form>
 
-          <div className="mt-6 space-y-3 text-center">
+          <div className="mt-6 text-center">
             <Link
-              href="/investor/signup"
-              className="flex items-center justify-center gap-2 text-sm text-cosmic-gold hover:text-yellow-400 transition-colors"
+              href="/investor/login"
+              className="text-sm text-nebula-400 hover:text-nebula-300 transition-colors"
             >
-              <FileText className="w-4 h-4" />
-              New investor? Apply here
-            </Link>
-            <Link
-              href="/login"
-              className="block text-sm text-cosmic-white/40 hover:text-cosmic-white/60 transition-colors"
-            >
-              Not an investor? Go to main login
+              Investor? Login here &rarr;
             </Link>
           </div>
         </motion.div>

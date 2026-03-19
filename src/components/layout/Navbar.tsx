@@ -42,6 +42,12 @@ export default function Navbar() {
             Reserve Now
           </Link>
           <Link
+            href="/login"
+            className="text-xs tracking-wider uppercase text-cosmic-white/40 hover:text-cosmic-gold transition-colors"
+          >
+            Login
+          </Link>
+          <Link
             href="/investor/login"
             className="text-xs tracking-wider uppercase text-cosmic-white/40 hover:text-cosmic-gold transition-colors"
           >
@@ -78,8 +84,11 @@ export default function Navbar() {
                   {link.label}
                 </Link>
               ))}
+              <Link href="/login" className="text-sm text-cosmic-white/40 hover:text-cosmic-gold">
+                Login
+              </Link>
               <Link href="/investor/login" className="text-sm text-cosmic-white/40 hover:text-cosmic-gold">
-                Investor Login
+                Investor Portal
               </Link>
             </div>
           </motion.div>
