@@ -21,8 +21,12 @@ import {
   FolderOpen,
   ScrollText,
   Megaphone,
+  Star,
+  Rocket,
+  Crown,
 } from "lucide-react";
 import { useContent } from "@/components/providers/ContentProvider";
+import { getTiers, saveTiers, resetTiers, Tier, TierLevel } from "@/lib/tiers";
 
 const navItems = [
   { href: "/admin/dashboard", label: "Overview", icon: BarChart3 },
@@ -33,7 +37,8 @@ const navItems = [
 ];
 
 const contentSections = [
-  { id: "packages", label: "Packages", icon: Package },
+  { id: "tiers", label: "Memorial Tiers", icon: Crown },
+  { id: "packages", label: "Legacy Packages", icon: Package },
   { id: "testimonials", label: "Testimonials", icon: MessageSquare },
   { id: "hero", label: "Hero Section", icon: FileText },
   { id: "contact", label: "Contact Info", icon: FileText },
@@ -42,9 +47,21 @@ const contentSections = [
   { id: "nda", label: "NDA Agreement", icon: ScrollText },
 ];
 
+const tierIcons: Record<TierLevel, typeof Star> = {
+  stardust: Star,
+  voyager: Rocket,
+  eternal: Crown,
+};
+
+const tierColors: Record<TierLevel, { bg: string; text: string; border: string }> = {
+  stardust: { bg: "bg-nebula-500/20", text: "text-nebula-400", border: "border-nebula-400/30" },
+  voyager: { bg: "bg-cosmic-gold/20", text: "text-cosmic-gold", border: "border-cosmic-gold/30" },
+  eternal: { bg: "bg-stellar-400/20", text: "text-stellar-400", border: "border-stellar-400/30" },
+};
+
 export default function AdminCMS() {
   const { content, updatePackage, updateSiteContent, addTestimonial, deleteTestimonial, resetContent } = useContent();
-  const [activeSection, setActiveSection] = useState("packages");
+  const [activeSection, setActiveSection] = useState("tiers");
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
@@ -60,6 +77,9 @@ export default function AdminCMS() {
   const [investorDocuments, setInvestorDocuments] = useState(content.investorDocuments || []);
   const [companyUpdates, setCompanyUpdates] = useState(content.companyUpdates || []);
   const [ndaText, setNdaText] = useState(content.ndaText || "");
+
+  // Memorial tiers state
+  const [memorialTiers, setMemorialTiers] = useState<Tier[]>(getTiers());
 
   // New item forms
   const [newTestimonial, setNewTestimonial] = useState({ quote: "", name: "", relation: "" });
@@ -84,6 +104,15 @@ export default function AdminCMS() {
     setNdaText(content.ndaText || "");
   }, [content]);
 
+  // Listen for tier updates
+  useEffect(() => {
+    const handleTiersUpdated = () => {
+      setMemorialTiers(getTiers());
+    };
+    window.addEventListener("tiers-updated", handleTiersUpdated);
+    return () => window.removeEventListener("tiers-updated", handleTiersUpdated);
+  }, []);
+
   const handleSave = async () => {
     setSaving(true);
 
@@ -91,6 +120,9 @@ export default function AdminCMS() {
     packages.forEach((pkg) => {
       updatePackage(pkg.id, pkg);
     });
+
+    // Save tiers
+    saveTiers(memorialTiers);
 
     // Save all content
     updateSiteContent({
@@ -116,6 +148,8 @@ export default function AdminCMS() {
   const handleReset = () => {
     if (confirm("Are you sure you want to reset all content to defaults? This cannot be undone.")) {
       resetContent();
+      resetTiers();
+      setMemorialTiers(getTiers());
     }
   };
 
@@ -135,6 +169,49 @@ export default function AdminCMS() {
           return { ...pkg, features: newFeatures };
         }
         return pkg;
+      })
+    );
+  };
+
+  // Tier helpers
+  const updateLocalTier = (id: TierLevel, field: string, value: string | number | boolean) => {
+    setMemorialTiers((prev) =>
+      prev.map((tier) => (tier.id === id ? { ...tier, [field]: value } : tier))
+    );
+  };
+
+  const updateTierFeature = (tierId: TierLevel, featureIndex: number, value: string) => {
+    setMemorialTiers((prev) =>
+      prev.map((tier) => {
+        if (tier.id === tierId) {
+          const newFeatures = [...tier.features];
+          newFeatures[featureIndex] = value;
+          return { ...tier, features: newFeatures };
+        }
+        return tier;
+      })
+    );
+  };
+
+  const addTierFeature = (tierId: TierLevel) => {
+    setMemorialTiers((prev) =>
+      prev.map((tier) => {
+        if (tier.id === tierId) {
+          return { ...tier, features: [...tier.features, "New feature"] };
+        }
+        return tier;
+      })
+    );
+  };
+
+  const removeTierFeature = (tierId: TierLevel, featureIndex: number) => {
+    setMemorialTiers((prev) =>
+      prev.map((tier) => {
+        if (tier.id === tierId) {
+          const newFeatures = tier.features.filter((_, i) => i !== featureIndex);
+          return { ...tier, features: newFeatures };
+        }
+        return tier;
       })
     );
   };
@@ -319,9 +396,154 @@ export default function AdminCMS() {
 
           {/* Content Editor */}
           <div className="lg:col-span-3">
-            {/* Packages Editor */}
+            {/* Memorial Tiers Editor */}
+            {activeSection === "tiers" && (
+              <div className="space-y-6">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <h3 className="font-heading tracking-wider text-lg">Memorial Tiers</h3>
+                    <p className="text-xs text-cosmic-white/50 mt-1">
+                      Configure pricing, features, and descriptions for each tier
+                    </p>
+                  </div>
+                </div>
+
+                {memorialTiers.map((tier, i) => {
+                  const TierIcon = tierIcons[tier.id];
+                  const colors = tierColors[tier.id];
+                  return (
+                    <motion.div
+                      key={tier.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: i * 0.1 }}
+                      className={`glass-card p-6 border ${colors.border}`}
+                    >
+                      <div className="flex items-center gap-3 mb-6">
+                        <div className={`w-10 h-10 rounded-xl ${colors.bg} flex items-center justify-center`}>
+                          <TierIcon className={`w-5 h-5 ${colors.text}`} />
+                        </div>
+                        <div className="flex-1">
+                          <h3 className={`font-heading tracking-wider ${colors.text}`}>{tier.name}</h3>
+                          <p className="text-xs text-cosmic-white/50">Tier ID: {tier.id}</p>
+                        </div>
+                        {tier.highlighted && (
+                          <span className="bg-cosmic-gold text-space-black text-[10px] font-heading tracking-wider px-2 py-0.5 rounded-full">
+                            Popular
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="grid md:grid-cols-3 gap-4 mb-4">
+                        <div>
+                          <label className="block text-xs font-heading tracking-wider text-cosmic-white/50 mb-2">
+                            Tier Name
+                          </label>
+                          <input
+                            type="text"
+                            value={tier.name}
+                            onChange={(e) => updateLocalTier(tier.id, "name", e.target.value)}
+                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm text-cosmic-white focus:outline-none focus:border-nebula-500"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-heading tracking-wider text-cosmic-white/50 mb-2">
+                            Tagline
+                          </label>
+                          <input
+                            type="text"
+                            value={tier.tagline}
+                            onChange={(e) => updateLocalTier(tier.id, "tagline", e.target.value)}
+                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm text-cosmic-white focus:outline-none focus:border-nebula-500"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-heading tracking-wider text-cosmic-white/50 mb-2">
+                            Price ($)
+                          </label>
+                          <input
+                            type="number"
+                            value={tier.price}
+                            onChange={(e) => updateLocalTier(tier.id, "price", parseInt(e.target.value) || 0)}
+                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm text-cosmic-white focus:outline-none focus:border-nebula-500"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="mb-4">
+                        <label className="block text-xs font-heading tracking-wider text-cosmic-white/50 mb-2">
+                          Description
+                        </label>
+                        <textarea
+                          value={tier.description}
+                          onChange={(e) => updateLocalTier(tier.id, "description", e.target.value)}
+                          rows={2}
+                          className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm text-cosmic-white focus:outline-none focus:border-nebula-500 resize-none"
+                        />
+                      </div>
+
+                      <div className="mb-4">
+                        <div className="flex items-center justify-between mb-2">
+                          <label className="block text-xs font-heading tracking-wider text-cosmic-white/50">
+                            Features
+                          </label>
+                          <button
+                            onClick={() => addTierFeature(tier.id)}
+                            className="text-xs text-nebula-400 hover:text-nebula-300 flex items-center gap-1"
+                          >
+                            <Plus className="w-3 h-3" />
+                            Add Feature
+                          </button>
+                        </div>
+                        <div className="space-y-2">
+                          {tier.features.map((feature, fi) => (
+                            <div key={fi} className="flex gap-2">
+                              <input
+                                type="text"
+                                value={feature}
+                                onChange={(e) => updateTierFeature(tier.id, fi, e.target.value)}
+                                className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm text-cosmic-white focus:outline-none focus:border-nebula-500"
+                              />
+                              <button
+                                onClick={() => removeTierFeature(tier.id, fi)}
+                                className="p-2 hover:bg-red-500/20 rounded-lg transition-colors text-cosmic-white/50 hover:text-red-400"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {tier.id === "voyager" && (
+                        <div className="flex items-center gap-3 pt-4 border-t border-white/10">
+                          <input
+                            type="checkbox"
+                            id={`highlighted-${tier.id}`}
+                            checked={tier.highlighted || false}
+                            onChange={(e) => updateLocalTier(tier.id, "highlighted", e.target.checked)}
+                            className="w-4 h-4 rounded bg-white/10 border-white/20 text-cosmic-gold focus:ring-cosmic-gold"
+                          />
+                          <label htmlFor={`highlighted-${tier.id}`} className="text-sm text-cosmic-white/70">
+                            Mark as &quot;Most Popular&quot;
+                          </label>
+                        </div>
+                      )}
+                    </motion.div>
+                  );
+                })}
+              </div>
+            )}
+
+            {/* Legacy Packages Editor */}
             {activeSection === "packages" && (
               <div className="space-y-6">
+                <div className="p-4 bg-stellar-400/10 rounded-xl border border-stellar-400/20 mb-6">
+                  <p className="text-xs text-stellar-400 leading-relaxed">
+                    <strong>Note:</strong> These are legacy packages. The new 3-tier system (Stardust, Voyager, Eternal)
+                    is now the primary pricing structure. Edit those in the &quot;Memorial Tiers&quot; section.
+                  </p>
+                </div>
                 {packages.map((pkg, i) => (
                   <motion.div
                     key={pkg.id}

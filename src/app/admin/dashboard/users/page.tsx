@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import {
@@ -17,7 +17,13 @@ import {
   Eye,
   TrendingUp,
   ChevronDown,
+  Star,
+  Crown,
+  X,
+  ExternalLink,
 } from "lucide-react";
+import { getUsers, deleteUser, StoredUser } from "@/lib/user-store";
+import { getTiers } from "@/lib/tiers";
 
 const navItems = [
   { href: "/admin/dashboard", label: "Overview", icon: BarChart3 },
@@ -27,70 +33,44 @@ const navItems = [
   { href: "/admin/dashboard/settings", label: "Settings", icon: Settings },
 ];
 
-// Mock users data
-const mockUsers = [
-  {
-    id: "admin-001",
-    name: "System Administrator",
-    email: "admin@spaceburial.com",
-    role: "admin",
-    status: "active",
-    joinDate: "2025-01-01",
-  },
-  {
-    id: "inv-001",
-    name: "Alexandra Chen",
-    email: "investor@example.com",
-    role: "investor",
-    status: "active",
-    joinDate: "2025-06-15",
-    shares: 50000,
-    investment: "$250,000",
-  },
-  {
-    id: "inv-002",
-    name: "Marcus Webb",
-    email: "demo@spaceburial.com",
-    role: "investor",
-    status: "active",
-    joinDate: "2025-09-01",
-    shares: 20000,
-    investment: "$100,000",
-  },
-  {
-    id: "imm-001",
-    name: "Robert Starfield",
-    email: "eternal@example.com",
-    role: "immortal",
-    status: "active",
-    joinDate: "2025-11-01",
-    package: "Immortal Memorial",
-    launchDate: "2026-09-15",
-  },
-  {
-    id: "imm-002",
-    name: "Jennifer Martinez",
-    email: "memorial@example.com",
-    role: "immortal",
-    status: "active",
-    joinDate: "2026-01-10",
-    package: "Rocket Memorial",
-    launchDate: "2026-06-21",
-  },
-];
+const tierNames: Record<string, string> = {
+  stardust: "Stardust",
+  voyager: "Voyager",
+  eternal: "Eternal",
+};
 
 export default function AdminUsers() {
+  const [users, setUsers] = useState<StoredUser[]>([]);
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState<string>("all");
-  const [selectedUser, setSelectedUser] = useState<string | null>(null);
+  const [selectedUser, setSelectedUser] = useState<StoredUser | null>(null);
 
-  const filteredUsers = mockUsers.filter((user) => {
+  useEffect(() => {
+    // Load users
+    setUsers(getUsers());
+
+    // Listen for user updates
+    const handleUsersUpdated = () => {
+      setUsers(getUsers());
+    };
+    window.addEventListener("users-updated", handleUsersUpdated);
+    return () => window.removeEventListener("users-updated", handleUsersUpdated);
+  }, []);
+
+  const filteredUsers = users.filter((user) => {
     const matchesSearch =
       user.name.toLowerCase().includes(search.toLowerCase()) ||
       user.email.toLowerCase().includes(search.toLowerCase());
     const matchesRole = roleFilter === "all" || user.role === roleFilter;
     return matchesSearch && matchesRole;
   });
+
+  const handleDeleteUser = (userId: string, userName: string) => {
+    if (confirm(`Are you sure you want to delete ${userName}?`)) {
+      deleteUser(userId);
+      setSelectedUser(null);
+    }
+  };
 
   const getRoleIcon = (role: string) => {
     switch (role) {
@@ -114,6 +94,37 @@ export default function AdminUsers() {
     return styles[role as keyof typeof styles] || "bg-white/10 text-white";
   };
 
+  const getTierBadge = (tier?: string) => {
+    if (!tier) return null;
+    const styles: Record<string, string> = {
+      stardust: "bg-nebula-500/20 text-nebula-400",
+      voyager: "bg-cosmic-gold/20 text-cosmic-gold",
+      eternal: "bg-stellar-400/20 text-stellar-400",
+    };
+    return styles[tier] || "bg-white/10 text-white";
+  };
+
+  const getTierIcon = (tier?: string) => {
+    switch (tier) {
+      case "stardust":
+        return <Star className="w-3 h-3" />;
+      case "voyager":
+        return <Rocket className="w-3 h-3" />;
+      case "eternal":
+        return <Crown className="w-3 h-3" />;
+      default:
+        return null;
+    }
+  };
+
+  // Count by role
+  const counts = {
+    all: users.length,
+    admin: users.filter(u => u.role === "admin").length,
+    investor: users.filter(u => u.role === "investor").length,
+    immortal: users.filter(u => u.role === "immortal").length,
+  };
+
   return (
     <div className="pt-24 pb-20 px-6">
       <div className="max-w-7xl mx-auto">
@@ -130,6 +141,22 @@ export default function AdminUsers() {
               <h1 className="text-2xl font-heading font-bold tracking-wider">
                 User Management
               </h1>
+            </div>
+          </div>
+
+          {/* Stats */}
+          <div className="flex gap-4 mt-4 md:mt-0">
+            <div className="text-center">
+              <p className="text-2xl font-heading text-cosmic-gold">{counts.immortal}</p>
+              <p className="text-xs text-cosmic-white/50">Customers</p>
+            </div>
+            <div className="text-center">
+              <p className="text-2xl font-heading text-cosmic-gold">{counts.investor}</p>
+              <p className="text-xs text-cosmic-white/50">Investors</p>
+            </div>
+            <div className="text-center">
+              <p className="text-2xl font-heading text-cosmic-white">{counts.all}</p>
+              <p className="text-xs text-cosmic-white/50">Total</p>
             </div>
           </div>
         </div>
@@ -171,10 +198,10 @@ export default function AdminUsers() {
                 onChange={(e) => setRoleFilter(e.target.value)}
                 className="appearance-none bg-white/5 border border-white/10 rounded-xl px-4 py-2 pr-10 text-sm text-cosmic-white focus:outline-none focus:border-nebula-500"
               >
-                <option value="all">All Roles</option>
-                <option value="admin">Admins</option>
-                <option value="investor">Investors</option>
-                <option value="immortal">Immortals</option>
+                <option value="all">All Roles ({counts.all})</option>
+                <option value="admin">Admins ({counts.admin})</option>
+                <option value="investor">Investors ({counts.investor})</option>
+                <option value="immortal">Customers ({counts.immortal})</option>
               </select>
               <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-cosmic-white/30 pointer-events-none" />
             </div>
@@ -194,13 +221,13 @@ export default function AdminUsers() {
                     Role
                   </th>
                   <th className="text-left px-6 py-4 text-xs font-heading tracking-wider text-cosmic-white/50">
+                    Package
+                  </th>
+                  <th className="text-left px-6 py-4 text-xs font-heading tracking-wider text-cosmic-white/50">
                     Status
                   </th>
                   <th className="text-left px-6 py-4 text-xs font-heading tracking-wider text-cosmic-white/50">
                     Joined
-                  </th>
-                  <th className="text-left px-6 py-4 text-xs font-heading tracking-wider text-cosmic-white/50">
-                    Details
                   </th>
                   <th className="text-right px-6 py-4 text-xs font-heading tracking-wider text-cosmic-white/50">
                     Actions
@@ -208,78 +235,98 @@ export default function AdminUsers() {
                 </tr>
               </thead>
               <tbody>
-                {filteredUsers.map((user, i) => (
-                  <motion.tr
-                    key={user.id}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: i * 0.05 }}
-                    className="border-b border-white/5 hover:bg-white/5 transition-colors"
-                  >
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center">
-                          {getRoleIcon(user.role)}
+                {filteredUsers.length === 0 ? (
+                  <tr>
+                    <td colSpan={6} className="px-6 py-12 text-center text-cosmic-white/50">
+                      No users found
+                    </td>
+                  </tr>
+                ) : (
+                  filteredUsers.map((user, i) => (
+                    <motion.tr
+                      key={user.id}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: i * 0.03 }}
+                      className="border-b border-white/5 hover:bg-white/5 transition-colors"
+                    >
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center">
+                            {getRoleIcon(user.role)}
+                          </div>
+                          <div>
+                            <p className="text-sm text-cosmic-white">
+                              {user.name}
+                            </p>
+                            <p className="text-xs text-cosmic-white/40">
+                              {user.email}
+                            </p>
+                          </div>
                         </div>
-                        <div>
-                          <p className="text-sm text-cosmic-white">
-                            {user.name}
-                          </p>
-                          <p className="text-xs text-cosmic-white/40">
-                            {user.email}
-                          </p>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span
-                        className={`px-2 py-1 rounded-lg text-xs font-heading tracking-wider capitalize ${getRoleBadge(
-                          user.role
-                        )}`}
-                      >
-                        {user.role}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className="flex items-center gap-2">
-                        <span className="w-2 h-2 rounded-full bg-green-400" />
-                        <span className="text-sm text-cosmic-white/70 capitalize">
-                          {user.status}
-                        </span>
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-sm text-cosmic-white/50">
-                      {user.joinDate}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-cosmic-white/50">
-                      {user.role === "investor" && (
-                        <span>{user.investment}</span>
-                      )}
-                      {user.role === "immortal" && (
-                        <span>{user.package}</span>
-                      )}
-                      {user.role === "admin" && <span>Full Access</span>}
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center justify-end gap-2">
-                        <button
-                          onClick={() => setSelectedUser(user.id)}
-                          className="p-2 rounded-lg hover:bg-white/10 transition-colors text-cosmic-white/50 hover:text-cosmic-white"
+                      </td>
+                      <td className="px-6 py-4">
+                        <span
+                          className={`px-2 py-1 rounded-lg text-xs font-heading tracking-wider capitalize ${getRoleBadge(
+                            user.role
+                          )}`}
                         >
-                          <Eye className="w-4 h-4" />
-                        </button>
-                        <button className="p-2 rounded-lg hover:bg-white/10 transition-colors text-cosmic-white/50 hover:text-nebula-400">
-                          <Edit className="w-4 h-4" />
-                        </button>
-                        {user.role !== "admin" && (
-                          <button className="p-2 rounded-lg hover:bg-white/10 transition-colors text-cosmic-white/50 hover:text-red-400">
-                            <Trash2 className="w-4 h-4" />
-                          </button>
+                          {user.role === "immortal" ? "Customer" : user.role}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        {user.tier ? (
+                          <span
+                            className={`inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-heading tracking-wider ${getTierBadge(user.tier)}`}
+                          >
+                            {getTierIcon(user.tier)}
+                            {tierNames[user.tier] || user.tier}
+                          </span>
+                        ) : user.role === "investor" ? (
+                          <span className="text-sm text-cosmic-white/50">
+                            {user.investment || "N/A"}
+                          </span>
+                        ) : (
+                          <span className="text-sm text-cosmic-white/30">—</span>
                         )}
-                      </div>
-                    </td>
-                  </motion.tr>
-                ))}
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="flex items-center gap-2">
+                          <span className={`w-2 h-2 rounded-full ${
+                            user.status === "active" ? "bg-green-400" :
+                            user.status === "pending" ? "bg-yellow-400" : "bg-red-400"
+                          }`} />
+                          <span className="text-sm text-cosmic-white/70 capitalize">
+                            {user.status}
+                          </span>
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-sm text-cosmic-white/50">
+                        {user.joinDate}
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center justify-end gap-2">
+                          <button
+                            onClick={() => setSelectedUser(user)}
+                            className="p-2 rounded-lg hover:bg-white/10 transition-colors text-cosmic-white/50 hover:text-cosmic-white"
+                            title="View details"
+                          >
+                            <Eye className="w-4 h-4" />
+                          </button>
+                          {user.role !== "admin" && (
+                            <button
+                              onClick={() => handleDeleteUser(user.id, user.name)}
+                              className="p-2 rounded-lg hover:bg-white/10 transition-colors text-cosmic-white/50 hover:text-red-400"
+                              title="Delete user"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          )}
+                        </div>
+                      </td>
+                    </motion.tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
@@ -287,9 +334,130 @@ export default function AdminUsers() {
 
         {/* User count */}
         <p className="text-sm text-cosmic-white/40 mt-4">
-          Showing {filteredUsers.length} of {mockUsers.length} users
+          Showing {filteredUsers.length} of {users.length} users
         </p>
       </div>
+
+      {/* User Detail Modal */}
+      {selectedUser && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
+          <div
+            className="absolute inset-0 bg-space-black/80 backdrop-blur-sm"
+            onClick={() => setSelectedUser(null)}
+          />
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="relative w-full max-w-lg glass-card p-6"
+          >
+            <div className="flex justify-between items-start mb-6">
+              <div className="flex items-center gap-3">
+                <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                  selectedUser.role === "admin" ? "bg-nebula-500/20" :
+                  selectedUser.role === "investor" ? "bg-cosmic-gold/20" : "bg-stellar-400/20"
+                }`}>
+                  {getRoleIcon(selectedUser.role)}
+                </div>
+                <div>
+                  <h2 className="font-heading text-xl tracking-wider">{selectedUser.name}</h2>
+                  <p className="text-sm text-cosmic-white/50">{selectedUser.email}</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setSelectedUser(null)}
+                className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+              >
+                <X className="w-5 h-5 text-cosmic-white/50" />
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-white/5 rounded-xl p-3">
+                  <p className="text-xs text-cosmic-white/50 mb-1">Role</p>
+                  <p className={`font-heading tracking-wider capitalize ${
+                    selectedUser.role === "admin" ? "text-nebula-400" :
+                    selectedUser.role === "investor" ? "text-cosmic-gold" : "text-stellar-400"
+                  }`}>
+                    {selectedUser.role === "immortal" ? "Customer" : selectedUser.role}
+                  </p>
+                </div>
+                <div className="bg-white/5 rounded-xl p-3">
+                  <p className="text-xs text-cosmic-white/50 mb-1">Status</p>
+                  <p className="text-cosmic-white capitalize">{selectedUser.status}</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-white/5 rounded-xl p-3">
+                  <p className="text-xs text-cosmic-white/50 mb-1">Joined</p>
+                  <p className="text-cosmic-white">{selectedUser.joinDate}</p>
+                </div>
+                {selectedUser.phone && (
+                  <div className="bg-white/5 rounded-xl p-3">
+                    <p className="text-xs text-cosmic-white/50 mb-1">Phone</p>
+                    <p className="text-cosmic-white">{selectedUser.phone}</p>
+                  </div>
+                )}
+              </div>
+
+              {selectedUser.role === "immortal" && (
+                <>
+                  {selectedUser.tier && (
+                    <div className="bg-white/5 rounded-xl p-3">
+                      <p className="text-xs text-cosmic-white/50 mb-1">Package Tier</p>
+                      <span className={`inline-flex items-center gap-2 font-heading tracking-wider ${
+                        selectedUser.tier === "stardust" ? "text-nebula-400" :
+                        selectedUser.tier === "voyager" ? "text-cosmic-gold" : "text-stellar-400"
+                      }`}>
+                        {getTierIcon(selectedUser.tier)}
+                        {tierNames[selectedUser.tier]}
+                        <span className="text-cosmic-white/50 font-normal">
+                          (${getTiers().find(t => t.id === selectedUser.tier)?.price.toLocaleString()})
+                        </span>
+                      </span>
+                    </div>
+                  )}
+                  {selectedUser.honoreeName && (
+                    <div className="bg-white/5 rounded-xl p-3">
+                      <p className="text-xs text-cosmic-white/50 mb-1">Honoree Name</p>
+                      <p className="text-cosmic-white">{selectedUser.honoreeName}</p>
+                    </div>
+                  )}
+                </>
+              )}
+
+              {selectedUser.role === "investor" && (
+                <>
+                  {selectedUser.investment && (
+                    <div className="bg-white/5 rounded-xl p-3">
+                      <p className="text-xs text-cosmic-white/50 mb-1">Investment</p>
+                      <p className="text-cosmic-gold font-heading text-lg">{selectedUser.investment}</p>
+                    </div>
+                  )}
+                  {selectedUser.shares && (
+                    <div className="bg-white/5 rounded-xl p-3">
+                      <p className="text-xs text-cosmic-white/50 mb-1">Shares</p>
+                      <p className="text-cosmic-white">{selectedUser.shares.toLocaleString()}</p>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+
+            {selectedUser.role !== "admin" && (
+              <div className="mt-6 pt-4 border-t border-white/10 flex justify-end gap-3">
+                <button
+                  onClick={() => handleDeleteUser(selectedUser.id, selectedUser.name)}
+                  className="btn-secondary text-red-400 border-red-400/30 hover:bg-red-400/10"
+                >
+                  Delete User
+                </button>
+              </div>
+            )}
+          </motion.div>
+        </div>
+      )}
     </div>
   );
 }

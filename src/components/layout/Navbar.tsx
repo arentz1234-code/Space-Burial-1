@@ -2,7 +2,8 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { Menu, X, Rocket, User, LogOut, LayoutDashboard, ChevronDown } from "lucide-react";
+import Image from "next/image";
+import { Menu, X, User, LogOut, LayoutDashboard, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -49,11 +50,15 @@ export default function Navbar() {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-space-900/80 backdrop-blur-lg border-b border-white/5">
       <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-3 group">
-          <Rocket className="w-8 h-8 text-nebula-400 group-hover:text-cosmic-gold transition-colors" />
-          <span className="font-heading text-xl tracking-widest uppercase">
-            Space<span className="text-nebula-400">Burial</span>
-          </span>
+        <Link href="/" className="flex items-center">
+          <Image
+            src="/images/logo.png"
+            alt="Space Burial - Immortality Among the Stars"
+            width={180}
+            height={60}
+            className="h-14 w-auto"
+            priority
+          />
         </Link>
 
         {/* Desktop Links */}

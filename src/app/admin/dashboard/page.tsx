@@ -42,35 +42,35 @@ const recentActivity = [
 
 export default function AdminDashboard() {
   return (
-    <div className="pt-24 pb-20 px-6">
+    <div className="pt-20 sm:pt-24 pb-12 sm:pb-20 px-4 sm:px-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 sm:mb-8">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-nebula-500/20 flex items-center justify-center">
-              <Shield className="w-5 h-5 text-nebula-400" />
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-nebula-500/20 flex items-center justify-center">
+              <Shield className="w-4 h-4 sm:w-5 sm:h-5 text-nebula-400" />
             </div>
             <div>
-              <p className="font-heading text-xs tracking-[0.3em] uppercase text-nebula-400 mb-1">
+              <p className="font-heading text-[10px] sm:text-xs tracking-[0.2em] sm:tracking-[0.3em] uppercase text-nebula-400 mb-0.5 sm:mb-1">
                 Admin Portal
               </p>
-              <h1 className="text-2xl font-heading font-bold tracking-wider">
+              <h1 className="text-xl sm:text-2xl font-heading font-bold tracking-wider">
                 Dashboard
               </h1>
             </div>
           </div>
-          <p className="text-cosmic-white/50 text-sm mt-2 md:mt-0">
+          <p className="text-cosmic-white/50 text-xs sm:text-sm mt-2 md:mt-0">
             Welcome back, Administrator
           </p>
         </div>
 
         {/* Navigation */}
-        <div className="flex gap-2 mb-8 overflow-x-auto pb-2">
+        <div className="flex gap-1 sm:gap-2 mb-6 sm:mb-8 overflow-x-auto pb-2 -mx-2 px-2">
           {navItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-heading tracking-wider whitespace-nowrap transition-colors ${
+              className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-heading tracking-wider whitespace-nowrap transition-colors ${
                 item.active
                   ? "bg-nebula-500/20 text-nebula-400"
                   : "text-cosmic-white/50 hover:bg-white/5 hover:text-cosmic-white"
@@ -83,21 +83,21 @@ export default function AdminDashboard() {
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-4 mb-6 sm:mb-8">
           {stats.map((stat, i) => (
             <motion.div
               key={stat.label}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.05 }}
-              className="glass-card p-5"
+              className="glass-card p-3 sm:p-5"
             >
-              <stat.icon className="w-5 h-5 text-nebula-400 mb-3" />
-              <p className="font-heading text-xl tracking-wider">{stat.value}</p>
-              <div className="flex items-center justify-between mt-1">
-                <p className="text-cosmic-white/40 text-xs">{stat.label}</p>
+              <stat.icon className="w-4 h-4 sm:w-5 sm:h-5 text-nebula-400 mb-2 sm:mb-3" />
+              <p className="font-heading text-base sm:text-xl tracking-wider">{stat.value}</p>
+              <div className="flex items-center justify-between mt-1 gap-1">
+                <p className="text-cosmic-white/40 text-[10px] sm:text-xs truncate">{stat.label}</p>
                 {stat.change && (
-                  <span className="text-green-400 text-xs">{stat.change}</span>
+                  <span className="text-green-400 text-[10px] sm:text-xs shrink-0">{stat.change}</span>
                 )}
               </div>
             </motion.div>

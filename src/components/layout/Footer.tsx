@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Rocket } from "lucide-react";
+import Image from "next/image";
 
 export default function Footer() {
   return (
@@ -8,12 +8,15 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
           {/* Brand */}
           <div className="md:col-span-2">
-            <div className="flex items-center gap-3 mb-4">
-              <Rocket className="w-6 h-6 text-nebula-400" />
-              <span className="font-heading text-lg tracking-widest uppercase">
-                Space<span className="text-nebula-400">Burial</span>
-              </span>
-            </div>
+            <Link href="/" className="inline-block mb-4">
+              <Image
+                src="/images/logo.png"
+                alt="Space Burial - Immortality Among the Stars"
+                width={150}
+                height={50}
+                className="h-16 w-auto"
+              />
+            </Link>
             <p className="text-cosmic-white/50 text-sm leading-relaxed max-w-sm">
               The ultimate tribute. Send your legacy to the stars — forever part of the universe.
             </p>
@@ -58,10 +61,10 @@ export default function Footer() {
             &copy; {new Date().getFullYear()} Space Burial. All rights reserved.
           </p>
           <div className="flex gap-6">
-            <Link href="#" className="text-xs text-cosmic-white/30 hover:text-cosmic-white/50">
+            <Link href="/privacy" className="text-xs text-cosmic-white/30 hover:text-cosmic-white/50">
               Privacy Policy
             </Link>
-            <Link href="#" className="text-xs text-cosmic-white/30 hover:text-cosmic-white/50">
+            <Link href="/terms" className="text-xs text-cosmic-white/30 hover:text-cosmic-white/50">
               Terms of Service
             </Link>
           </div>
