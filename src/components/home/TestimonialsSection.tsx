@@ -3,28 +3,12 @@
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import { Quote } from "lucide-react";
-
-const testimonials = [
-  {
-    quote: "My father dedicated his life to astronomy. Knowing he's among the stars now brings our family incredible peace.",
-    name: "Sarah M.",
-    relation: "Daughter",
-  },
-  {
-    quote: "The ceremony was beautiful, and watching the launch was the most emotional experience of my life. Worth every penny.",
-    name: "James K.",
-    relation: "Son",
-  },
-  {
-    quote: "Space Burial made the entire process seamless during the hardest time of our lives. Truly the ultimate tribute.",
-    name: "Maria L.",
-    relation: "Spouse",
-  },
-];
+import { useContent } from "@/components/providers/ContentProvider";
 
 export default function TestimonialsSection() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const { content } = useContent();
 
   return (
     <section ref={ref} className="py-32 px-6 bg-space-800/50">
@@ -43,9 +27,9 @@ export default function TestimonialsSection() {
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {testimonials.map((t, i) => (
+          {content.testimonials.map((t, i) => (
             <motion.div
-              key={t.name}
+              key={t.id}
               initial={{ opacity: 0, y: 40 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ delay: i * 0.2 }}

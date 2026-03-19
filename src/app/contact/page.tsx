@@ -4,15 +4,23 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import StarField from "@/components/shared/StarField";
 import { Send, Phone, Mail, MapPin } from "lucide-react";
+import { useContent } from "@/components/providers/ContentProvider";
 
 export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
+  const { content } = useContent();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // In production: POST to /api/contact
     setSubmitted(true);
   };
+
+  const contactInfo = [
+    { icon: Phone, label: "Phone", value: content.contactPhone },
+    { icon: Mail, label: "Email", value: content.contactEmail },
+    { icon: MapPin, label: "Location", value: content.contactAddress },
+  ];
 
   return (
     <>
@@ -38,11 +46,7 @@ export default function ContactPage() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
             {/* Contact Info */}
             <div className="space-y-8">
-              {[
-                { icon: Phone, label: "Phone", value: "1-800-555-1234" },
-                { icon: Mail, label: "Email", value: "info@spaceburial.com" },
-                { icon: MapPin, label: "Location", value: "United States" },
-              ].map((item) => (
+              {contactInfo.map((item) => (
                 <div key={item.label} className="flex items-start gap-4">
                   <div className="w-12 h-12 rounded-xl bg-nebula-500/20 flex items-center justify-center shrink-0">
                     <item.icon className="w-5 h-5 text-nebula-400" />

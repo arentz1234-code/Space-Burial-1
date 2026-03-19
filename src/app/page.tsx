@@ -1,5 +1,6 @@
 import HeroSection from "@/components/home/HeroSection";
 import MissionStatement from "@/components/home/MissionStatement";
+import EmotionalSection from "@/components/home/EmotionalSection";
 import PackagePreview from "@/components/home/PackagePreview";
 import HowItWorksPreview from "@/components/home/HowItWorksPreview";
 import TestimonialsSection from "@/components/home/TestimonialsSection";
@@ -13,6 +14,7 @@ export default function Home() {
       <div className="relative z-10">
         <HeroSection />
         <MissionStatement />
+        <EmotionalSection />
         <PackagePreview />
         <HowItWorksPreview />
         <TestimonialsSection />

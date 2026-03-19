@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import {
@@ -15,7 +15,12 @@ import {
   FileText,
   Image,
   MessageSquare,
+  Check,
+  RotateCcw,
+  Plus,
+  Trash2,
 } from "lucide-react";
+import { useContent } from "@/components/providers/ContentProvider";
 
 const navItems = [
   { href: "/admin/dashboard", label: "Overview", icon: BarChart3 },
@@ -26,61 +31,113 @@ const navItems = [
 ];
 
 const contentSections = [
-  { id: "packages", label: "Packages", icon: Package, count: 2 },
-  { id: "pages", label: "Pages", icon: FileText, count: 6 },
-  { id: "testimonials", label: "Testimonials", icon: MessageSquare, count: 3 },
-  { id: "media", label: "Media", icon: Image, count: 24 },
+  { id: "packages", label: "Packages", icon: Package },
+  { id: "testimonials", label: "Testimonials", icon: MessageSquare },
+  { id: "hero", label: "Hero Section", icon: FileText },
+  { id: "contact", label: "Contact Info", icon: FileText },
 ];
 
 export default function AdminCMS() {
+  const { content, updatePackage, updateSiteContent, addTestimonial, deleteTestimonial, resetContent } = useContent();
   const [activeSection, setActiveSection] = useState("packages");
   const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
 
-  // Mock package data for editing
-  const [packages, setPackages] = useState([
-    {
-      id: "rocket",
-      name: "Rocket Memorial",
-      price: 3800,
-      tagline: "A journey among the stars",
-      description:
-        "Send a symbolic portion of cremated remains aboard a real space launch. Your loved one becomes part of the cosmos on a suborbital or orbital mission.",
-      features: [
-        "Portion of ashes launched into space",
-        "Personalized flight certificate",
-        "Live launch viewing invitation",
-        "Mission tracking & updates",
-        "HD video of the launch",
-      ],
-    },
-    {
-      id: "immortal",
-      name: "Immortal Memorial",
-      price: 3800,
-      tagline: "Forever among the stars",
-      description:
-        "A permanent celestial tribute. Remains are placed into a lasting orbit or deep space trajectory — an eternal memorial that circles the Earth or voyages beyond.",
-      features: [
-        "Permanent orbital or deep space placement",
-        "Custom memorial capsule",
-        "Digital memorial page",
-        "Family ceremony coordination",
-        "Lifetime mission tracking access",
-      ],
-    },
-  ]);
+  // Local state for editing
+  const [packages, setPackages] = useState(content.packages);
+  const [testimonials, setTestimonials] = useState(content.testimonials);
+  const [heroTitle, setHeroTitle] = useState(content.heroTitle);
+  const [heroSubtitle, setHeroSubtitle] = useState(content.heroSubtitle);
+  const [heroTagline, setHeroTagline] = useState(content.heroTagline);
+  const [contactEmail, setContactEmail] = useState(content.contactEmail);
+  const [contactPhone, setContactPhone] = useState(content.contactPhone);
+  const [contactAddress, setContactAddress] = useState(content.contactAddress);
+
+  // New testimonial form
+  const [newTestimonial, setNewTestimonial] = useState({ quote: "", name: "", relation: "" });
+  const [showAddTestimonial, setShowAddTestimonial] = useState(false);
+
+  // Sync local state with content store
+  useEffect(() => {
+    setPackages(content.packages);
+    setTestimonials(content.testimonials);
+    setHeroTitle(content.heroTitle);
+    setHeroSubtitle(content.heroSubtitle);
+    setHeroTagline(content.heroTagline);
+    setContactEmail(content.contactEmail);
+    setContactPhone(content.contactPhone);
+    setContactAddress(content.contactAddress);
+  }, [content]);
 
   const handleSave = async () => {
     setSaving(true);
-    // Mock save
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    // Save packages
+    packages.forEach((pkg) => {
+      updatePackage(pkg.id, pkg);
+    });
+
+    // Save other content
+    updateSiteContent({
+      testimonials,
+      heroTitle,
+      heroSubtitle,
+      heroTagline,
+      contactEmail,
+      contactPhone,
+      contactAddress,
+    });
+
+    // Simulate save delay
+    await new Promise((resolve) => setTimeout(resolve, 500));
     setSaving(false);
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
   };
 
-  const updatePackage = (id: string, field: string, value: string | number) => {
+  const handleReset = () => {
+    if (confirm("Are you sure you want to reset all content to defaults? This cannot be undone.")) {
+      resetContent();
+    }
+  };
+
+  const updateLocalPackage = (id: string, field: string, value: string | number) => {
     setPackages((prev) =>
       prev.map((pkg) => (pkg.id === id ? { ...pkg, [field]: value } : pkg))
     );
+  };
+
+  const updatePackageFeature = (pkgId: string, featureIndex: number, value: string) => {
+    setPackages((prev) =>
+      prev.map((pkg) => {
+        if (pkg.id === pkgId) {
+          const newFeatures = [...pkg.features];
+          newFeatures[featureIndex] = value;
+          return { ...pkg, features: newFeatures };
+        }
+        return pkg;
+      })
+    );
+  };
+
+  const updateLocalTestimonial = (id: string, field: string, value: string) => {
+    setTestimonials((prev) =>
+      prev.map((t) => (t.id === id ? { ...t, [field]: value } : t))
+    );
+  };
+
+  const handleAddTestimonial = () => {
+    if (newTestimonial.quote && newTestimonial.name) {
+      addTestimonial(newTestimonial);
+      setNewTestimonial({ quote: "", name: "", relation: "" });
+      setShowAddTestimonial(false);
+    }
+  };
+
+  const handleDeleteTestimonial = (id: string) => {
+    if (confirm("Delete this testimonial?")) {
+      deleteTestimonial(id);
+    }
   };
 
   return (
@@ -102,17 +159,33 @@ export default function AdminCMS() {
             </div>
           </div>
           <div className="flex gap-3 mt-4 md:mt-0">
-            <button className="btn-secondary flex items-center gap-2">
-              <Eye className="w-4 h-4" />
-              Preview
+            <button
+              onClick={handleReset}
+              className="btn-secondary flex items-center gap-2 text-sm"
+            >
+              <RotateCcw className="w-4 h-4" />
+              Reset
             </button>
+            <Link href="/" target="_blank" className="btn-secondary flex items-center gap-2">
+              <Eye className="w-4 h-4" />
+              Preview Site
+            </Link>
             <button
               onClick={handleSave}
               disabled={saving}
               className="btn-primary flex items-center gap-2"
             >
-              <Save className="w-4 h-4" />
-              {saving ? "Saving..." : "Save Changes"}
+              {saved ? (
+                <>
+                  <Check className="w-4 h-4" />
+                  Saved!
+                </>
+              ) : (
+                <>
+                  <Save className="w-4 h-4" />
+                  {saving ? "Saving..." : "Save Changes"}
+                </>
+              )}
             </button>
           </div>
         </div>
@@ -157,17 +230,21 @@ export default function AdminCMS() {
                       <section.icon className="w-4 h-4" />
                       {section.label}
                     </span>
-                    <span className="text-xs text-cosmic-white/30">
-                      {section.count}
-                    </span>
                   </button>
                 ))}
+              </div>
+
+              <div className="mt-6 pt-4 border-t border-white/10">
+                <p className="text-xs text-cosmic-white/40 leading-relaxed">
+                  Changes are saved to your browser. Click &quot;Save Changes&quot; to update the live site.
+                </p>
               </div>
             </div>
           </div>
 
           {/* Content Editor */}
           <div className="lg:col-span-3">
+            {/* Packages Editor */}
             {activeSection === "packages" && (
               <div className="space-y-6">
                 {packages.map((pkg, i) => (
@@ -180,9 +257,7 @@ export default function AdminCMS() {
                   >
                     <div className="flex items-center gap-3 mb-6">
                       <Package className="w-5 h-5 text-nebula-400" />
-                      <h3 className="font-heading tracking-wider">
-                        {pkg.name}
-                      </h3>
+                      <h3 className="font-heading tracking-wider">{pkg.name}</h3>
                     </div>
 
                     <div className="grid md:grid-cols-2 gap-4 mb-4">
@@ -193,9 +268,7 @@ export default function AdminCMS() {
                         <input
                           type="text"
                           value={pkg.name}
-                          onChange={(e) =>
-                            updatePackage(pkg.id, "name", e.target.value)
-                          }
+                          onChange={(e) => updateLocalPackage(pkg.id, "name", e.target.value)}
                           className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm text-cosmic-white focus:outline-none focus:border-nebula-500"
                         />
                       </div>
@@ -206,13 +279,7 @@ export default function AdminCMS() {
                         <input
                           type="number"
                           value={pkg.price}
-                          onChange={(e) =>
-                            updatePackage(
-                              pkg.id,
-                              "price",
-                              parseInt(e.target.value)
-                            )
-                          }
+                          onChange={(e) => updateLocalPackage(pkg.id, "price", parseInt(e.target.value) || 0)}
                           className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm text-cosmic-white focus:outline-none focus:border-nebula-500"
                         />
                       </div>
@@ -225,42 +292,257 @@ export default function AdminCMS() {
                       <input
                         type="text"
                         value={pkg.tagline}
-                        onChange={(e) =>
-                          updatePackage(pkg.id, "tagline", e.target.value)
-                        }
+                        onChange={(e) => updateLocalPackage(pkg.id, "tagline", e.target.value)}
                         className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm text-cosmic-white focus:outline-none focus:border-nebula-500"
                       />
                     </div>
 
-                    <div>
+                    <div className="mb-4">
                       <label className="block text-xs font-heading tracking-wider text-cosmic-white/50 mb-2">
                         Description
                       </label>
                       <textarea
                         value={pkg.description}
-                        onChange={(e) =>
-                          updatePackage(pkg.id, "description", e.target.value)
-                        }
+                        onChange={(e) => updateLocalPackage(pkg.id, "description", e.target.value)}
                         rows={3}
                         className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm text-cosmic-white focus:outline-none focus:border-nebula-500 resize-none"
                       />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-heading tracking-wider text-cosmic-white/50 mb-2">
+                        Features
+                      </label>
+                      <div className="space-y-2">
+                        {pkg.features.map((feature, fi) => (
+                          <input
+                            key={fi}
+                            type="text"
+                            value={feature}
+                            onChange={(e) => updatePackageFeature(pkg.id, fi, e.target.value)}
+                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm text-cosmic-white focus:outline-none focus:border-nebula-500"
+                          />
+                        ))}
+                      </div>
                     </div>
                   </motion.div>
                 ))}
               </div>
             )}
 
-            {activeSection !== "packages" && (
-              <div className="glass-card p-12 text-center">
-                <FileEdit className="w-12 h-12 text-cosmic-white/20 mx-auto mb-4" />
-                <h3 className="font-heading tracking-wider mb-2">
-                  {contentSections.find((s) => s.id === activeSection)?.label}{" "}
-                  Editor
-                </h3>
-                <p className="text-sm text-cosmic-white/50">
-                  Content editor for this section coming soon.
-                </p>
+            {/* Testimonials Editor */}
+            {activeSection === "testimonials" && (
+              <div className="space-y-6">
+                <div className="flex justify-between items-center">
+                  <h3 className="font-heading tracking-wider">Testimonials</h3>
+                  <button
+                    onClick={() => setShowAddTestimonial(true)}
+                    className="btn-primary flex items-center gap-2 text-sm"
+                  >
+                    <Plus className="w-4 h-4" />
+                    Add Testimonial
+                  </button>
+                </div>
+
+                {showAddTestimonial && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    className="glass-card p-6"
+                  >
+                    <h4 className="font-heading text-sm tracking-wider mb-4">New Testimonial</h4>
+                    <div className="space-y-4">
+                      <textarea
+                        placeholder="Quote..."
+                        value={newTestimonial.quote}
+                        onChange={(e) => setNewTestimonial({ ...newTestimonial, quote: e.target.value })}
+                        rows={3}
+                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm text-cosmic-white focus:outline-none focus:border-nebula-500 resize-none"
+                      />
+                      <div className="grid grid-cols-2 gap-4">
+                        <input
+                          type="text"
+                          placeholder="Name"
+                          value={newTestimonial.name}
+                          onChange={(e) => setNewTestimonial({ ...newTestimonial, name: e.target.value })}
+                          className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm text-cosmic-white focus:outline-none focus:border-nebula-500"
+                        />
+                        <input
+                          type="text"
+                          placeholder="Relation (e.g., Daughter)"
+                          value={newTestimonial.relation}
+                          onChange={(e) => setNewTestimonial({ ...newTestimonial, relation: e.target.value })}
+                          className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm text-cosmic-white focus:outline-none focus:border-nebula-500"
+                        />
+                      </div>
+                      <div className="flex gap-3 justify-end">
+                        <button onClick={() => setShowAddTestimonial(false)} className="btn-secondary">
+                          Cancel
+                        </button>
+                        <button onClick={handleAddTestimonial} className="btn-primary">
+                          Add
+                        </button>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+
+                {testimonials.map((testimonial, i) => (
+                  <motion.div
+                    key={testimonial.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: i * 0.1 }}
+                    className="glass-card p-6"
+                  >
+                    <div className="flex justify-between items-start mb-4">
+                      <MessageSquare className="w-5 h-5 text-cosmic-gold" />
+                      <button
+                        onClick={() => handleDeleteTestimonial(testimonial.id)}
+                        className="p-2 hover:bg-red-500/20 rounded-lg transition-colors text-cosmic-white/50 hover:text-red-400"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                    <div className="space-y-4">
+                      <textarea
+                        value={testimonial.quote}
+                        onChange={(e) => updateLocalTestimonial(testimonial.id, "quote", e.target.value)}
+                        rows={3}
+                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm text-cosmic-white focus:outline-none focus:border-nebula-500 resize-none"
+                      />
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-xs font-heading tracking-wider text-cosmic-white/50 mb-2">
+                            Name
+                          </label>
+                          <input
+                            type="text"
+                            value={testimonial.name}
+                            onChange={(e) => updateLocalTestimonial(testimonial.id, "name", e.target.value)}
+                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm text-cosmic-white focus:outline-none focus:border-nebula-500"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-heading tracking-wider text-cosmic-white/50 mb-2">
+                            Relation
+                          </label>
+                          <input
+                            type="text"
+                            value={testimonial.relation}
+                            onChange={(e) => updateLocalTestimonial(testimonial.id, "relation", e.target.value)}
+                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm text-cosmic-white focus:outline-none focus:border-nebula-500"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
               </div>
+            )}
+
+            {/* Hero Section Editor */}
+            {activeSection === "hero" && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="glass-card p-6"
+              >
+                <div className="flex items-center gap-3 mb-6">
+                  <FileText className="w-5 h-5 text-nebula-400" />
+                  <h3 className="font-heading tracking-wider">Hero Section</h3>
+                </div>
+
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-xs font-heading tracking-wider text-cosmic-white/50 mb-2">
+                      Tagline (small text above title)
+                    </label>
+                    <input
+                      type="text"
+                      value={heroTagline}
+                      onChange={(e) => setHeroTagline(e.target.value)}
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm text-cosmic-white focus:outline-none focus:border-nebula-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-heading tracking-wider text-cosmic-white/50 mb-2">
+                      Main Title
+                    </label>
+                    <input
+                      type="text"
+                      value={heroTitle}
+                      onChange={(e) => setHeroTitle(e.target.value)}
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm text-cosmic-white focus:outline-none focus:border-nebula-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-heading tracking-wider text-cosmic-white/50 mb-2">
+                      Subtitle / Description
+                    </label>
+                    <textarea
+                      value={heroSubtitle}
+                      onChange={(e) => setHeroSubtitle(e.target.value)}
+                      rows={4}
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm text-cosmic-white focus:outline-none focus:border-nebula-500 resize-none"
+                    />
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {/* Contact Info Editor */}
+            {activeSection === "contact" && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="glass-card p-6"
+              >
+                <div className="flex items-center gap-3 mb-6">
+                  <FileText className="w-5 h-5 text-nebula-400" />
+                  <h3 className="font-heading tracking-wider">Contact Information</h3>
+                </div>
+
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-xs font-heading tracking-wider text-cosmic-white/50 mb-2">
+                      Email Address
+                    </label>
+                    <input
+                      type="email"
+                      value={contactEmail}
+                      onChange={(e) => setContactEmail(e.target.value)}
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm text-cosmic-white focus:outline-none focus:border-nebula-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-heading tracking-wider text-cosmic-white/50 mb-2">
+                      Phone Number
+                    </label>
+                    <input
+                      type="tel"
+                      value={contactPhone}
+                      onChange={(e) => setContactPhone(e.target.value)}
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm text-cosmic-white focus:outline-none focus:border-nebula-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-heading tracking-wider text-cosmic-white/50 mb-2">
+                      Address
+                    </label>
+                    <textarea
+                      value={contactAddress}
+                      onChange={(e) => setContactAddress(e.target.value)}
+                      rows={2}
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm text-cosmic-white focus:outline-none focus:border-nebula-500 resize-none"
+                    />
+                  </div>
+                </div>
+              </motion.div>
             )}
           </div>
         </div>
