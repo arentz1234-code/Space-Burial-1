@@ -13,7 +13,15 @@ import {
   ExternalLink,
   Calendar,
   Sparkles,
+  MessageCircle,
+  Mic,
+  Save,
+  Check,
+  Info,
 } from "lucide-react";
+
+// Storage key for digital voice data
+const VOICE_STORAGE_KEY = "spaceburial_digital_voice";
 
 // Mock data - would come from API/session in production
 const mockImmortal = {
@@ -58,6 +66,26 @@ const mockImmortal = {
   ],
 };
 
+interface DigitalVoice {
+  personality: string;
+  speakingStyle: string;
+  commonPhrases: string[];
+  lifeStory: string;
+  values: string;
+  advice: string;
+  enabled: boolean;
+}
+
+const defaultVoice: DigitalVoice = {
+  personality: "",
+  speakingStyle: "",
+  commonPhrases: ["", "", "", "", ""],
+  lifeStory: "",
+  values: "",
+  advice: "",
+  enabled: false,
+};
+
 interface TimeLeft {
   days: number;
   hours: number;
@@ -80,13 +108,41 @@ function calculateTimeLeft(launchDate: string): TimeLeft {
   return { days: 0, hours: 0, minutes: 0, seconds: 0 };
 }
 
+function getVoiceData(): DigitalVoice {
+  if (typeof window === "undefined") return defaultVoice;
+  try {
+    const stored = localStorage.getItem(VOICE_STORAGE_KEY);
+    if (stored) {
+      return { ...defaultVoice, ...JSON.parse(stored) };
+    }
+  } catch (e) {
+    console.error("Error reading voice data:", e);
+  }
+  return defaultVoice;
+}
+
+function saveVoiceData(data: DigitalVoice): void {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem(VOICE_STORAGE_KEY, JSON.stringify(data));
+    window.dispatchEvent(new CustomEvent("voice-updated", { detail: data }));
+  } catch (e) {
+    console.error("Error saving voice data:", e);
+  }
+}
+
 export default function ImmortalDashboard() {
   const [timeLeft, setTimeLeft] = useState<TimeLeft>(
     calculateTimeLeft(mockImmortal.launchDate)
   );
-  const [activeTab, setActiveTab] = useState<"memories" | "photos">("memories");
+  const [activeTab, setActiveTab] = useState<"memories" | "photos" | "voice">("memories");
   const [showAddMemory, setShowAddMemory] = useState(false);
   const [newMemory, setNewMemory] = useState({ title: "", content: "" });
+
+  // Digital Voice state
+  const [voiceData, setVoiceData] = useState<DigitalVoice>(defaultVoice);
+  const [voiceSaving, setVoiceSaving] = useState(false);
+  const [voiceSaved, setVoiceSaved] = useState(false);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -95,6 +151,26 @@ export default function ImmortalDashboard() {
 
     return () => clearInterval(timer);
   }, []);
+
+  // Load voice data on mount
+  useEffect(() => {
+    setVoiceData(getVoiceData());
+  }, []);
+
+  const handleSaveVoice = async () => {
+    setVoiceSaving(true);
+    saveVoiceData(voiceData);
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    setVoiceSaving(false);
+    setVoiceSaved(true);
+    setTimeout(() => setVoiceSaved(false), 2000);
+  };
+
+  const updatePhrase = (index: number, value: string) => {
+    const newPhrases = [...voiceData.commonPhrases];
+    newPhrases[index] = value;
+    setVoiceData({ ...voiceData, commonPhrases: newPhrases });
+  };
 
   const memorialUrl = `https://spaceburial.com/memorial/${mockImmortal.memorialSlug}`;
 
@@ -235,11 +311,11 @@ export default function ImmortalDashboard() {
           </div>
         </motion.div>
 
-        {/* Memories & Photos Tabs */}
-        <div className="flex gap-4 mb-6">
+        {/* Tabs */}
+        <div className="flex gap-4 mb-6 overflow-x-auto pb-2">
           <button
             onClick={() => setActiveTab("memories")}
-            className={`flex items-center gap-2 px-6 py-3 rounded-xl font-heading tracking-wider text-sm transition-colors ${
+            className={`flex items-center gap-2 px-6 py-3 rounded-xl font-heading tracking-wider text-sm transition-colors whitespace-nowrap ${
               activeTab === "memories"
                 ? "bg-nebula-500/20 text-nebula-400"
                 : "text-cosmic-white/50 hover:bg-white/5"
@@ -250,7 +326,7 @@ export default function ImmortalDashboard() {
           </button>
           <button
             onClick={() => setActiveTab("photos")}
-            className={`flex items-center gap-2 px-6 py-3 rounded-xl font-heading tracking-wider text-sm transition-colors ${
+            className={`flex items-center gap-2 px-6 py-3 rounded-xl font-heading tracking-wider text-sm transition-colors whitespace-nowrap ${
               activeTab === "photos"
                 ? "bg-nebula-500/20 text-nebula-400"
                 : "text-cosmic-white/50 hover:bg-white/5"
@@ -258,6 +334,20 @@ export default function ImmortalDashboard() {
           >
             <Image className="w-4 h-4" />
             Photos ({mockImmortal.photos.length})
+          </button>
+          <button
+            onClick={() => setActiveTab("voice")}
+            className={`flex items-center gap-2 px-6 py-3 rounded-xl font-heading tracking-wider text-sm transition-colors whitespace-nowrap ${
+              activeTab === "voice"
+                ? "bg-stellar-400/20 text-stellar-400"
+                : "text-cosmic-white/50 hover:bg-white/5"
+            }`}
+          >
+            <MessageCircle className="w-4 h-4" />
+            Digital Voice
+            {voiceData.enabled && (
+              <span className="w-2 h-2 rounded-full bg-green-400" />
+            )}
           </button>
         </div>
 
@@ -382,6 +472,187 @@ export default function ImmortalDashboard() {
                     Add Photo
                   </span>
                 </button>
+              </div>
+            </>
+          )}
+
+          {activeTab === "voice" && (
+            <>
+              <div className="flex justify-between items-center mb-6">
+                <div className="flex items-center gap-3">
+                  <Mic className="w-5 h-5 text-stellar-400" />
+                  <div>
+                    <h3 className="font-heading text-sm tracking-wider text-stellar-400">
+                      Digital Voice
+                    </h3>
+                    <p className="text-xs text-cosmic-white/50">
+                      Create an AI companion for visitors to chat with
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={handleSaveVoice}
+                  disabled={voiceSaving}
+                  className="btn-primary flex items-center gap-2 text-sm"
+                >
+                  {voiceSaved ? (
+                    <>
+                      <Check className="w-4 h-4" />
+                      Saved!
+                    </>
+                  ) : (
+                    <>
+                      <Save className="w-4 h-4" />
+                      {voiceSaving ? "Saving..." : "Save Voice"}
+                    </>
+                  )}
+                </button>
+              </div>
+
+              {/* Info Banner */}
+              <div className="bg-stellar-400/10 border border-stellar-400/20 rounded-xl p-4 mb-6">
+                <div className="flex gap-3">
+                  <Info className="w-5 h-5 text-stellar-400 shrink-0 mt-0.5" />
+                  <div className="text-sm text-cosmic-white/70">
+                    <p className="mb-2">
+                      The Digital Voice feature allows visitors to have meaningful conversations
+                      with your loved one&apos;s memory. Fill in the details below to help the AI
+                      respond in their voice and personality.
+                    </p>
+                    <p className="text-stellar-400">
+                      The more detail you provide, the more authentic the conversations will feel.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Enable Toggle */}
+              <div className="bg-white/5 rounded-xl p-4 mb-6">
+                <label className="flex items-center justify-between cursor-pointer">
+                  <div>
+                    <p className="font-heading text-sm tracking-wider">Enable Digital Voice</p>
+                    <p className="text-xs text-cosmic-white/50 mt-1">
+                      Allow visitors to chat with your loved one on the memorial page
+                    </p>
+                  </div>
+                  <div
+                    className={`relative w-12 h-6 rounded-full transition-colors ${
+                      voiceData.enabled ? "bg-stellar-400" : "bg-white/20"
+                    }`}
+                    onClick={() => setVoiceData({ ...voiceData, enabled: !voiceData.enabled })}
+                  >
+                    <div
+                      className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-transform ${
+                        voiceData.enabled ? "translate-x-7" : "translate-x-1"
+                      }`}
+                    />
+                  </div>
+                </label>
+              </div>
+
+              <div className="space-y-6">
+                {/* Personality */}
+                <div>
+                  <label className="block text-xs font-heading tracking-wider text-cosmic-white/50 mb-2">
+                    Personality Description
+                  </label>
+                  <textarea
+                    value={voiceData.personality}
+                    onChange={(e) => setVoiceData({ ...voiceData, personality: e.target.value })}
+                    rows={3}
+                    placeholder="Describe their personality... Were they warm and nurturing? Funny and witty? Wise and thoughtful? What made them unique?"
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-cosmic-white focus:outline-none focus:border-stellar-400 resize-none"
+                  />
+                </div>
+
+                {/* Speaking Style */}
+                <div>
+                  <label className="block text-xs font-heading tracking-wider text-cosmic-white/50 mb-2">
+                    Speaking Style
+                  </label>
+                  <textarea
+                    value={voiceData.speakingStyle}
+                    onChange={(e) => setVoiceData({ ...voiceData, speakingStyle: e.target.value })}
+                    rows={2}
+                    placeholder="How did they talk? Did they use certain words or expressions? Were they formal or casual? Did they have an accent or dialect?"
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-cosmic-white focus:outline-none focus:border-stellar-400 resize-none"
+                  />
+                </div>
+
+                {/* Common Phrases */}
+                <div>
+                  <label className="block text-xs font-heading tracking-wider text-cosmic-white/50 mb-2">
+                    Phrases They Often Said (up to 5)
+                  </label>
+                  <div className="space-y-2">
+                    {voiceData.commonPhrases.map((phrase, i) => (
+                      <input
+                        key={i}
+                        type="text"
+                        value={phrase}
+                        onChange={(e) => updatePhrase(i, e.target.value)}
+                        placeholder={`Phrase ${i + 1}... e.g., "Everything happens for a reason" or "Let me tell you something..."`}
+                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm text-cosmic-white focus:outline-none focus:border-stellar-400"
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                {/* Life Story */}
+                <div>
+                  <label className="block text-xs font-heading tracking-wider text-cosmic-white/50 mb-2">
+                    Life Story & Background
+                  </label>
+                  <textarea
+                    value={voiceData.lifeStory}
+                    onChange={(e) => setVoiceData({ ...voiceData, lifeStory: e.target.value })}
+                    rows={4}
+                    placeholder="Share their life story... Where they grew up, their career, their passions, important life events, family details..."
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-cosmic-white focus:outline-none focus:border-stellar-400 resize-none"
+                  />
+                </div>
+
+                {/* Values */}
+                <div>
+                  <label className="block text-xs font-heading tracking-wider text-cosmic-white/50 mb-2">
+                    Values & Beliefs
+                  </label>
+                  <textarea
+                    value={voiceData.values}
+                    onChange={(e) => setVoiceData({ ...voiceData, values: e.target.value })}
+                    rows={3}
+                    placeholder="What did they believe in? What values did they hold dear? What were their views on life, family, love, work, faith?"
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-cosmic-white focus:outline-none focus:border-stellar-400 resize-none"
+                  />
+                </div>
+
+                {/* Advice */}
+                <div>
+                  <label className="block text-xs font-heading tracking-wider text-cosmic-white/50 mb-2">
+                    Wisdom & Advice They Would Give
+                  </label>
+                  <textarea
+                    value={voiceData.advice}
+                    onChange={(e) => setVoiceData({ ...voiceData, advice: e.target.value })}
+                    rows={3}
+                    placeholder="What advice would they give? What wisdom did they share? What would they want their loved ones to remember?"
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-cosmic-white focus:outline-none focus:border-stellar-400 resize-none"
+                  />
+                </div>
+              </div>
+
+              {/* Preview Notice */}
+              <div className="mt-6 pt-6 border-t border-white/10">
+                <p className="text-xs text-cosmic-white/40 text-center">
+                  After saving, visitors can chat with {mockImmortal.honoredName} on the{" "}
+                  <a
+                    href={`/memorial/${mockImmortal.memorialSlug}`}
+                    target="_blank"
+                    className="text-stellar-400 hover:underline"
+                  >
+                    public memorial page
+                  </a>
+                </p>
               </div>
             </>
           )}

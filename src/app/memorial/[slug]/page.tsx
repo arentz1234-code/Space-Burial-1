@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useParams } from "next/navigation";
 import StarField from "@/components/shared/StarField";
 import {
@@ -13,13 +13,37 @@ import {
   BookOpen,
   Image,
   Sparkles,
+  MessageCircle,
+  Send,
+  User,
 } from "lucide-react";
+
+// Storage key for digital voice data (must match the immortal dashboard)
+const VOICE_STORAGE_KEY = "spaceburial_digital_voice";
+
+interface DigitalVoice {
+  personality: string;
+  speakingStyle: string;
+  commonPhrases: string[];
+  lifeStory: string;
+  values: string;
+  advice: string;
+  enabled: boolean;
+}
+
+interface ChatMessage {
+  id: string;
+  role: "user" | "assistant";
+  content: string;
+  timestamp: Date;
+}
 
 // Mock data - would come from API in production
 const mockMemorials: Record<
   string,
   {
     honoredName: string;
+    firstName: string;
     launchDate: string;
     missionName: string;
     packageType: string;
@@ -30,6 +54,7 @@ const mockMemorials: Record<
 > = {
   "robert-starfield-memorial": {
     honoredName: "Robert J. Starfield",
+    firstName: "Robert",
     launchDate: "2026-09-15T14:00:00Z",
     missionName: "Celestial Voyager VII",
     packageType: "Immortal Memorial",
@@ -58,6 +83,7 @@ const mockMemorials: Record<
   },
   "maria-martinez-memorial": {
     honoredName: "Maria Elena Martinez",
+    firstName: "Maria",
     launchDate: "2026-06-21T10:30:00Z",
     missionName: "Aurora Mission III",
     packageType: "Rocket Memorial",
@@ -99,13 +125,119 @@ function calculateTimeLeft(launchDate: string): TimeLeft {
   return { days: 0, hours: 0, minutes: 0, seconds: 0 };
 }
 
+function getVoiceData(): DigitalVoice | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const stored = localStorage.getItem(VOICE_STORAGE_KEY);
+    if (stored) {
+      const data = JSON.parse(stored);
+      if (data.enabled) return data;
+    }
+  } catch (e) {
+    console.error("Error reading voice data:", e);
+  }
+  return null;
+}
+
+// Generate a response based on the voice data and user message
+function generateResponse(
+  message: string,
+  voiceData: DigitalVoice,
+  firstName: string
+): string {
+  const lowerMessage = message.toLowerCase();
+
+  // Extract meaningful phrases from voice data
+  const phrases = voiceData.commonPhrases.filter(p => p.trim());
+  const randomPhrase = phrases.length > 0 ? phrases[Math.floor(Math.random() * phrases.length)] : "";
+
+  // Greeting responses
+  if (lowerMessage.includes("hello") || lowerMessage.includes("hi") || lowerMessage.includes("hey")) {
+    const greetings = [
+      `Hello there! It's so wonderful that you've come to visit. ${randomPhrase ? `You know, I always used to say, "${randomPhrase}"` : ""}`,
+      `Well, hello! Come, sit with me for a moment. I'm always happy to have company.`,
+      `Hi! What a pleasant surprise. Tell me, how are you doing?`,
+    ];
+    return greetings[Math.floor(Math.random() * greetings.length)];
+  }
+
+  // Questions about how they are
+  if (lowerMessage.includes("how are you") || lowerMessage.includes("how do you feel")) {
+    return `I'm at peace, truly. ${voiceData.values ? `I always believed that ${voiceData.values.slice(0, 100)}...` : ""} Now I get to be among the stars, which is more than I ever dreamed of.`;
+  }
+
+  // Miss you / love you
+  if (lowerMessage.includes("miss you") || lowerMessage.includes("miss u")) {
+    return `Oh, I know, and I miss you too, more than words can say. But I'm always with you — in the starlight, in your memories, in your heart. ${randomPhrase ? `Remember what I always said: "${randomPhrase}"` : ""}`;
+  }
+
+  if (lowerMessage.includes("love you") || lowerMessage.includes("love u")) {
+    return `I love you too, with all my heart. That love doesn't end — it just transforms. Every time you look up at the night sky, know that I'm looking back at you.`;
+  }
+
+  // Questions about life/stories
+  if (lowerMessage.includes("tell me about") || lowerMessage.includes("your life") || lowerMessage.includes("your story")) {
+    if (voiceData.lifeStory) {
+      return `Ah, you want to hear about my life? ${voiceData.lifeStory.slice(0, 300)}${voiceData.lifeStory.length > 300 ? "..." : ""}`;
+    }
+    return `My life was full of wonderful moments and people I loved. Every day was a gift, and I tried to make the most of it.`;
+  }
+
+  // Advice
+  if (lowerMessage.includes("advice") || lowerMessage.includes("what should i") || lowerMessage.includes("help me")) {
+    if (voiceData.advice) {
+      return `${voiceData.advice.slice(0, 300)}${voiceData.advice.length > 300 ? "..." : ""} ${randomPhrase ? `And always remember: "${randomPhrase}"` : ""}`;
+    }
+    return `The best advice I can give you is to live fully, love deeply, and never take a single moment for granted. Life is precious — treasure it.`;
+  }
+
+  // Why / meaning questions
+  if (lowerMessage.includes("why") || lowerMessage.includes("meaning") || lowerMessage.includes("purpose")) {
+    if (voiceData.values) {
+      return `That's a profound question. ${voiceData.values.slice(0, 250)}${voiceData.values.length > 250 ? "..." : ""}`;
+    }
+    return `Life's meaning is found in the connections we make, the love we share, and the impact we have on others. You were part of what gave my life meaning.`;
+  }
+
+  // Memory/remember questions
+  if (lowerMessage.includes("remember") || lowerMessage.includes("memory") || lowerMessage.includes("memories")) {
+    return `Of course I remember! Those memories are what I carry with me. The laughter, the quiet moments, the adventures we shared — they're all part of who I am, forever.`;
+  }
+
+  // Goodbye
+  if (lowerMessage.includes("goodbye") || lowerMessage.includes("bye") || lowerMessage.includes("have to go")) {
+    return `Goodbye for now, but never forever. Come back anytime you want to talk. I'll always be here, among the stars, waiting for our next conversation. ${randomPhrase ? `"${randomPhrase}"` : "Take care of yourself."}`;
+  }
+
+  // Default responses based on personality
+  const defaultResponses = [
+    voiceData.personality
+      ? `You know, ${voiceData.personality.slice(0, 150)}... That's just who I am. Tell me more about what's on your mind.`
+      : `Tell me more about what's on your mind. I'm here to listen.`,
+    `That's interesting. ${randomPhrase ? `I always used to say, "${randomPhrase}"` : "What made you think of that?"}`,
+    voiceData.speakingStyle
+      ? `${voiceData.speakingStyle.slice(0, 100)}... Anyway, I appreciate you sharing that with me.`
+      : `I appreciate you sharing that with me. What else would you like to talk about?`,
+    `Life has a way of teaching us things, doesn't it? ${voiceData.values ? voiceData.values.slice(0, 100) + "..." : ""}`,
+  ];
+
+  return defaultResponses[Math.floor(Math.random() * defaultResponses.length)];
+}
+
 export default function PublicMemorial() {
   const params = useParams();
   const slug = params.slug as string;
   const memorial = mockMemorials[slug];
 
   const [timeLeft, setTimeLeft] = useState<TimeLeft | null>(null);
-  const [activeTab, setActiveTab] = useState<"memories" | "photos">("memories");
+  const [activeTab, setActiveTab] = useState<"memories" | "photos" | "chat">("memories");
+  const [voiceData, setVoiceData] = useState<DigitalVoice | null>(null);
+
+  // Chat state
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [inputMessage, setInputMessage] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
+  const chatEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (memorial) {
@@ -116,6 +248,80 @@ export default function PublicMemorial() {
       return () => clearInterval(timer);
     }
   }, [memorial]);
+
+  // Load voice data
+  useEffect(() => {
+    const voice = getVoiceData();
+    setVoiceData(voice);
+
+    // Add welcome message if voice is enabled
+    if (voice && voice.enabled && memorial) {
+      setMessages([
+        {
+          id: "welcome",
+          role: "assistant",
+          content: `Hello, I'm ${memorial.firstName}. It's so wonderful that you've come to visit. Feel free to talk to me about anything — share your thoughts, ask questions, or just say hello. I'm here to listen.`,
+          timestamp: new Date(),
+        },
+      ]);
+    }
+
+    // Listen for voice updates
+    const handleVoiceUpdate = (e: CustomEvent<DigitalVoice>) => {
+      if (e.detail.enabled) {
+        setVoiceData(e.detail);
+      } else {
+        setVoiceData(null);
+      }
+    };
+
+    window.addEventListener("voice-updated", handleVoiceUpdate as EventListener);
+    return () => {
+      window.removeEventListener("voice-updated", handleVoiceUpdate as EventListener);
+    };
+  }, [memorial]);
+
+  // Scroll to bottom of chat
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  const handleSendMessage = async () => {
+    if (!inputMessage.trim() || !voiceData || !memorial) return;
+
+    const userMessage: ChatMessage = {
+      id: `user-${Date.now()}`,
+      role: "user",
+      content: inputMessage.trim(),
+      timestamp: new Date(),
+    };
+
+    setMessages((prev) => [...prev, userMessage]);
+    setInputMessage("");
+    setIsTyping(true);
+
+    // Simulate typing delay
+    await new Promise((resolve) => setTimeout(resolve, 1000 + Math.random() * 2000));
+
+    const response = generateResponse(inputMessage, voiceData, memorial.firstName);
+
+    const assistantMessage: ChatMessage = {
+      id: `assistant-${Date.now()}`,
+      role: "assistant",
+      content: response,
+      timestamp: new Date(),
+    };
+
+    setMessages((prev) => [...prev, assistantMessage]);
+    setIsTyping(false);
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
+    }
+  };
 
   if (!memorial) {
     return (
@@ -241,7 +447,7 @@ export default function PublicMemorial() {
           )}
 
           {/* Tabs */}
-          <div className="flex justify-center gap-4 mb-6">
+          <div className="flex justify-center gap-4 mb-6 flex-wrap">
             <button
               onClick={() => setActiveTab("memories")}
               className={`flex items-center gap-2 px-6 py-3 rounded-xl font-heading tracking-wider text-sm transition-colors ${
@@ -264,6 +470,19 @@ export default function PublicMemorial() {
               <Image className="w-4 h-4" />
               Photos
             </button>
+            {voiceData && voiceData.enabled && (
+              <button
+                onClick={() => setActiveTab("chat")}
+                className={`flex items-center gap-2 px-6 py-3 rounded-xl font-heading tracking-wider text-sm transition-colors ${
+                  activeTab === "chat"
+                    ? "bg-stellar-400/20 text-stellar-400"
+                    : "text-cosmic-white/50 hover:bg-white/5"
+                }`}
+              >
+                <MessageCircle className="w-4 h-4" />
+                Talk to {memorial.firstName}
+              </button>
+            )}
           </div>
 
           {/* Content */}
@@ -320,6 +539,111 @@ export default function PublicMemorial() {
                     </div>
                   </motion.div>
                 ))}
+              </div>
+            )}
+
+            {activeTab === "chat" && voiceData && (
+              <div className="flex flex-col h-[500px]">
+                {/* Chat Header */}
+                <div className="flex items-center gap-3 pb-4 border-b border-white/10 mb-4">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-stellar-400 to-nebula-500 flex items-center justify-center">
+                    <Sparkles className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <p className="font-heading text-sm tracking-wider">
+                      {memorial.firstName}&apos;s Digital Voice
+                    </p>
+                    <p className="text-xs text-green-400">Online</p>
+                  </div>
+                </div>
+
+                {/* Messages */}
+                <div className="flex-1 overflow-y-auto space-y-4 mb-4">
+                  <AnimatePresence>
+                    {messages.map((message) => (
+                      <motion.div
+                        key={message.id}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className={`flex ${
+                          message.role === "user" ? "justify-end" : "justify-start"
+                        }`}
+                      >
+                        <div
+                          className={`flex items-start gap-2 max-w-[80%] ${
+                            message.role === "user" ? "flex-row-reverse" : ""
+                          }`}
+                        >
+                          <div
+                            className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
+                              message.role === "user"
+                                ? "bg-nebula-500/30"
+                                : "bg-gradient-to-br from-stellar-400 to-nebula-500"
+                            }`}
+                          >
+                            {message.role === "user" ? (
+                              <User className="w-4 h-4 text-nebula-400" />
+                            ) : (
+                              <Sparkles className="w-4 h-4 text-white" />
+                            )}
+                          </div>
+                          <div
+                            className={`px-4 py-3 rounded-2xl ${
+                              message.role === "user"
+                                ? "bg-nebula-500/20 text-cosmic-white"
+                                : "bg-white/10 text-cosmic-white/90"
+                            }`}
+                          >
+                            <p className="text-sm leading-relaxed">{message.content}</p>
+                          </div>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </AnimatePresence>
+
+                  {/* Typing indicator */}
+                  {isTyping && (
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      className="flex justify-start"
+                    >
+                      <div className="flex items-start gap-2">
+                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-stellar-400 to-nebula-500 flex items-center justify-center">
+                          <Sparkles className="w-4 h-4 text-white" />
+                        </div>
+                        <div className="bg-white/10 px-4 py-3 rounded-2xl">
+                          <div className="flex gap-1">
+                            <span className="w-2 h-2 bg-cosmic-white/50 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                            <span className="w-2 h-2 bg-cosmic-white/50 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                            <span className="w-2 h-2 bg-cosmic-white/50 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+
+                  <div ref={chatEndRef} />
+                </div>
+
+                {/* Input */}
+                <div className="flex gap-3 pt-4 border-t border-white/10">
+                  <input
+                    type="text"
+                    value={inputMessage}
+                    onChange={(e) => setInputMessage(e.target.value)}
+                    onKeyPress={handleKeyPress}
+                    placeholder={`Say something to ${memorial.firstName}...`}
+                    className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-cosmic-white placeholder:text-cosmic-white/30 focus:outline-none focus:border-stellar-400 transition-colors"
+                  />
+                  <button
+                    onClick={handleSendMessage}
+                    disabled={!inputMessage.trim() || isTyping}
+                    className="px-4 py-3 rounded-xl bg-stellar-400 text-white hover:bg-stellar-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <Send className="w-5 h-5" />
+                  </button>
+                </div>
               </div>
             )}
           </motion.div>
