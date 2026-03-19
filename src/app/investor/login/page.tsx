@@ -31,6 +31,7 @@ export default function InvestorLogin() {
       if (res.ok && data.redirect) {
         // Only allow investors to access investor dashboard
         if (data.user.role === "investor") {
+          router.refresh();
           router.push("/investor/dashboard");
         } else {
           setError("This login is for investors only. Please use the main login.");

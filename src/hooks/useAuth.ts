@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, useCallback } from "react";
+import { useRouter, usePathname } from "next/navigation";
 
 export interface User {
   userId: string;
@@ -10,40 +10,53 @@ export interface User {
   role: "admin" | "investor" | "immortal";
 }
 
+// Helper to get cookie value by name
+function getCookie(name: string): string | null {
+  const cookies = document.cookie.split(";");
+  for (const cookie of cookies) {
+    const [cookieName, ...cookieValueParts] = cookie.trim().split("=");
+    if (cookieName === name) {
+      // Join back in case value contains = characters
+      return cookieValueParts.join("=");
+    }
+  }
+  return null;
+}
+
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const pathname = usePathname();
 
-  useEffect(() => {
-    // Check for session in cookie (client-side)
-    const checkSession = () => {
-      try {
-        // Get all cookies
-        const cookies = document.cookie.split(";");
-        const sessionCookie = cookies.find((c) => c.trim().startsWith("session="));
+  const checkSession = useCallback(() => {
+    try {
+      const sessionValue = getCookie("session");
 
-        if (sessionCookie) {
-          const sessionValue = sessionCookie.split("=")[1];
-          const decoded = decodeURIComponent(sessionValue);
-          const userData = JSON.parse(decoded);
-          setUser(userData);
-        } else {
-          setUser(null);
-        }
-      } catch (e) {
-        console.error("Error parsing session:", e);
+      if (sessionValue) {
+        const decoded = decodeURIComponent(sessionValue);
+        const userData = JSON.parse(decoded);
+        setUser(userData);
+      } else {
         setUser(null);
       }
-      setLoading(false);
-    };
+    } catch (e) {
+      console.error("Error parsing session:", e);
+      setUser(null);
+    }
+    setLoading(false);
+  }, []);
 
+  // Check session on mount and whenever pathname changes
+  useEffect(() => {
     checkSession();
+  }, [pathname, checkSession]);
 
-    // Listen for storage events (login/logout in other tabs)
+  // Also listen for storage events (login/logout in other tabs)
+  useEffect(() => {
     window.addEventListener("storage", checkSession);
     return () => window.removeEventListener("storage", checkSession);
-  }, []);
+  }, [checkSession]);
 
   const logout = async () => {
     try {

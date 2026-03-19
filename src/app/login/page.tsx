@@ -29,6 +29,8 @@ export default function LoginPage() {
       const data = await res.json();
 
       if (res.ok && data.redirect) {
+        // Refresh to ensure cookie is recognized, then navigate
+        router.refresh();
         router.push(data.redirect);
       } else if (data.error === "NDA_REQUIRED") {
         setError("Please sign the NDA before accessing your account.");
