@@ -3,7 +3,15 @@ import { cookies } from "next/headers";
 
 export async function POST() {
   const cookieStore = await cookies();
-  cookieStore.delete("session");
+
+  // Clear the session cookie
+  cookieStore.set("session", "", {
+    httpOnly: false,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    maxAge: 0, // Expire immediately
+  });
 
   return NextResponse.json({ success: true });
 }

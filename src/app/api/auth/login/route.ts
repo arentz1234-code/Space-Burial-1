@@ -34,17 +34,20 @@ export async function POST(req: Request) {
       );
     }
 
-    // Set session cookie (mock - use proper JWT/session in production)
-    const cookieStore = await cookies();
-    cookieStore.set("session", JSON.stringify({
+    const sessionData = {
       userId: user.id,
       email: user.email,
       name: user.name,
       role: user.role,
-    }), {
-      httpOnly: true,
+    };
+
+    // Set session cookie
+    const cookieStore = await cookies();
+    cookieStore.set("session", JSON.stringify(sessionData), {
+      httpOnly: false, // Allow client-side access for this mock implementation
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
+      path: "/", // Available across all pages
       maxAge: 60 * 60 * 24 * 7, // 1 week
     });
 
@@ -57,12 +60,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({
       success: true,
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-      },
+      user: sessionData,
       redirect: redirectPaths[user.role],
     });
   } catch {
