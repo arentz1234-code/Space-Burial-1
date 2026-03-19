@@ -27,108 +27,12 @@ export default function HeroSection() {
         {/* Dark space background */}
         <div className="absolute inset-0 bg-space-900" />
 
-        {/* Animated Rocket Launch */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden z-30">
-          {/* Rocket */}
-          <motion.div
-            initial={{ x: "15vw", y: "85vh", rotate: -45 }}
-            animate={{
-              x: ["15vw", "25vw", "45vw", "70vw", "90vw"],
-              y: ["85vh", "60vh", "35vh", "10vh", "-15vh"],
-              rotate: -45,
-            }}
-            transition={{
-              duration: 10,
-              repeat: Infinity,
-              repeatDelay: 5,
-              ease: [0.25, 0.1, 0.25, 1],
-            }}
-            className="absolute"
-          >
-            {/* Rocket body */}
-            <div className="relative">
-              <div className="w-10 h-10 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-gradient-to-br from-cosmic-white via-cosmic-white/90 to-cosmic-white/70 rounded-full flex items-center justify-center shadow-2xl">
-                <Rocket className="w-5 h-5 sm:w-7 sm:h-7 md:w-8 md:h-8 text-space-black rotate-45" />
-              </div>
-
-              {/* Inner glow */}
-              <div className="absolute inset-0 bg-cosmic-gold/30 rounded-full blur-md" />
-
-              {/* Rocket flame - main */}
-              <motion.div
-                animate={{
-                  scaleY: [1, 1.4, 1.1, 1.5, 1],
-                  scaleX: [1, 0.9, 1.1, 0.95, 1],
-                }}
-                transition={{
-                  duration: 0.1,
-                  repeat: Infinity,
-                }}
-                className="absolute -bottom-8 sm:-bottom-10 md:-bottom-12 left-1/2 -translate-x-1/2 rotate-45 origin-top"
-              >
-                <div className="w-4 h-12 sm:w-5 sm:h-16 md:w-6 md:h-20 bg-gradient-to-b from-white via-cosmic-gold via-40% via-orange-500 to-transparent rounded-full" />
-              </motion.div>
-
-              {/* Secondary flame */}
-              <motion.div
-                animate={{
-                  scaleY: [1.2, 1, 1.3, 0.9, 1.2],
-                  opacity: [0.8, 0.6, 0.9, 0.7, 0.8],
-                }}
-                transition={{
-                  duration: 0.08,
-                  repeat: Infinity,
-                }}
-                className="absolute -bottom-6 sm:-bottom-8 md:-bottom-10 left-1/2 -translate-x-1/2 rotate-45 origin-top"
-              >
-                <div className="w-6 h-10 sm:w-8 sm:h-14 md:w-10 md:h-16 bg-gradient-to-b from-cosmic-gold/80 via-orange-600/60 to-transparent rounded-full blur-[1px]" />
-              </motion.div>
-
-              {/* Outer glow */}
-              <motion.div
-                animate={{
-                  scale: [1, 1.2, 1],
-                  opacity: [0.5, 0.8, 0.5],
-                }}
-                transition={{
-                  duration: 0.2,
-                  repeat: Infinity,
-                }}
-                className="absolute -inset-2 bg-cosmic-gold/40 rounded-full blur-xl"
-              />
-            </div>
-          </motion.div>
-
-          {/* Smoke/exhaust trail particles */}
-          {[...Array(15)].map((_, i) => (
-            <motion.div
-              key={i}
-              initial={{
-                x: `${15 + i * 5}vw`,
-                y: `${85 - i * 6.5}vh`,
-                scale: 0,
-                opacity: 0,
-              }}
-              animate={{
-                scale: [0, 1, 2, 3],
-                opacity: [0, 0.3, 0.15, 0],
-              }}
-              transition={{
-                duration: 4,
-                delay: i * 0.5,
-                repeat: Infinity,
-                repeatDelay: 11,
-              }}
-              className="absolute w-6 h-6 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-gradient-to-br from-white/30 to-white/5 rounded-full blur-lg"
-            />
-          ))}
-        </div>
-
-        {/* Spinning Earth */}
+        {/* Earth Container - centered */}
         <motion.div
           style={{ scale }}
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
         >
+          {/* Spinning Earth */}
           <motion.div
             animate={{ rotateY: 360 }}
             transition={{ duration: 120, repeat: Infinity, ease: "linear" }}
@@ -143,8 +47,135 @@ export default function HeroSection() {
               priority
             />
           </motion.div>
+
           {/* Earth glow */}
           <div className="absolute inset-0 rounded-full bg-stellar-400/30 blur-[100px] scale-125" />
+
+          {/* Rocket launching FROM Earth's surface */}
+          <motion.div
+            initial={{
+              x: "10%",
+              y: "15%",
+              scale: 0.5,
+              opacity: 0
+            }}
+            animate={{
+              x: ["10%", "40%", "120%", "250%", "400%"],
+              y: ["15%", "-20%", "-80%", "-180%", "-300%"],
+              scale: [0.5, 0.8, 1, 1, 0.8],
+              opacity: [0, 1, 1, 1, 0],
+            }}
+            transition={{
+              duration: 8,
+              repeat: Infinity,
+              repeatDelay: 4,
+              ease: [0.25, 0.1, 0.25, 1],
+              times: [0, 0.2, 0.5, 0.8, 1],
+            }}
+            className="absolute z-10"
+            style={{ top: "35%", left: "25%" }}
+          >
+            {/* Rocket body */}
+            <div className="relative">
+              <motion.div
+                animate={{ rotate: [0, -2, 2, 0] }}
+                transition={{ duration: 0.5, repeat: Infinity }}
+                className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 bg-gradient-to-br from-cosmic-white via-cosmic-white/90 to-cosmic-white/70 rounded-full flex items-center justify-center shadow-2xl"
+              >
+                <Rocket className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 text-space-black -rotate-45" />
+              </motion.div>
+
+              {/* Inner glow */}
+              <div className="absolute inset-0 bg-cosmic-gold/40 rounded-full blur-md" />
+
+              {/* Rocket flame - main */}
+              <motion.div
+                animate={{
+                  scaleY: [1, 1.5, 1.2, 1.6, 1],
+                  scaleX: [1, 0.8, 1.1, 0.9, 1],
+                }}
+                transition={{
+                  duration: 0.08,
+                  repeat: Infinity,
+                }}
+                className="absolute top-full left-1/2 -translate-x-1/2 origin-top"
+              >
+                <div className="w-4 h-14 sm:w-5 sm:h-18 md:w-6 md:h-20 bg-gradient-to-b from-white via-cosmic-gold via-30% via-orange-500 via-60% to-transparent rounded-full" />
+              </motion.div>
+
+              {/* Secondary flame - wider */}
+              <motion.div
+                animate={{
+                  scaleY: [1.2, 0.9, 1.4, 1, 1.2],
+                  opacity: [0.7, 0.5, 0.8, 0.6, 0.7],
+                }}
+                transition={{
+                  duration: 0.06,
+                  repeat: Infinity,
+                }}
+                className="absolute top-full left-1/2 -translate-x-1/2 origin-top"
+              >
+                <div className="w-8 h-12 sm:w-10 sm:h-16 md:w-12 md:h-18 bg-gradient-to-b from-cosmic-gold/60 via-orange-600/40 to-transparent rounded-full blur-[2px]" />
+              </motion.div>
+
+              {/* Outer engine glow */}
+              <motion.div
+                animate={{
+                  scale: [1, 1.3, 1.1, 1.4, 1],
+                  opacity: [0.6, 0.9, 0.7, 1, 0.6],
+                }}
+                transition={{
+                  duration: 0.15,
+                  repeat: Infinity,
+                }}
+                className="absolute -inset-3 bg-cosmic-gold/50 rounded-full blur-xl"
+              />
+            </div>
+          </motion.div>
+
+          {/* Launch smoke at Earth surface */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0 }}
+            animate={{
+              opacity: [0, 0.6, 0.4, 0.2, 0],
+              scale: [0.5, 2, 4, 6, 8],
+            }}
+            transition={{
+              duration: 4,
+              repeat: Infinity,
+              repeatDelay: 8,
+              ease: "easeOut",
+            }}
+            className="absolute z-5"
+            style={{ top: "40%", left: "30%" }}
+          >
+            <div className="w-16 h-16 bg-gradient-to-br from-white/40 to-white/10 rounded-full blur-xl" />
+          </motion.div>
+
+          {/* Exhaust trail particles */}
+          {[...Array(12)].map((_, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{
+                opacity: [0, 0.5, 0.3, 0],
+                scale: [0, 1, 1.5, 2],
+                x: [0, i * 15, i * 30, i * 45],
+                y: [0, -i * 20, -i * 45, -i * 70],
+              }}
+              transition={{
+                duration: 3,
+                delay: 0.5 + i * 0.3,
+                repeat: Infinity,
+                repeatDelay: 9,
+                ease: "easeOut",
+              }}
+              className="absolute z-5"
+              style={{ top: "38%", left: "28%" }}
+            >
+              <div className="w-4 h-4 sm:w-6 sm:h-6 bg-gradient-to-br from-white/30 to-orange-500/10 rounded-full blur-md" />
+            </motion.div>
+          ))}
         </motion.div>
 
         {/* Gradient overlays */}
