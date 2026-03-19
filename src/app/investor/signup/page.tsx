@@ -5,13 +5,17 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import StarField from "@/components/shared/StarField";
 import { FileText, AlertCircle, CheckCircle, Shield } from "lucide-react";
-import { NDA_TEXT } from "@/lib/mock-users";
+import { useContent } from "@/components/providers/ContentProvider";
 
 export default function InvestorSignup() {
   const router = useRouter();
+  const { content } = useContent();
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  // Get NDA text from content store
+  const ndaText = content.ndaText || "";
 
   // Step 1: Personal info
   const [formData, setFormData] = useState({
@@ -273,7 +277,7 @@ export default function InvestorSignup() {
                     onScroll={handleScroll}
                     className="bg-white/5 border border-white/10 rounded-xl p-6 h-64 overflow-y-auto text-sm text-cosmic-white/70 leading-relaxed whitespace-pre-wrap"
                   >
-                    {NDA_TEXT}
+                    {ndaText}
                   </div>
 
                   {ndaScrolled && (

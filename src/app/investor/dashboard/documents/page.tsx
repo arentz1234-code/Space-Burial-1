@@ -2,10 +2,21 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { documents } from "@/lib/mock-financials";
-import { FileText, Download, ArrowLeft } from "lucide-react";
+import { useContent } from "@/components/providers/ContentProvider";
+import { FileText, Download, ArrowLeft, FolderOpen } from "lucide-react";
 
 export default function DocumentsPage() {
+  const { content, isLoading } = useContent();
+  const documents = content.investorDocuments || [];
+
+  if (isLoading) {
+    return (
+      <div className="pt-24 pb-20 px-6 min-h-screen flex items-center justify-center">
+        <div className="text-cosmic-white/50">Loading...</div>
+      </div>
+    );
+  }
+
   return (
     <div className="pt-24 pb-20 px-6">
       <div className="max-w-4xl mx-auto">
@@ -27,28 +38,35 @@ export default function DocumentsPage() {
           </p>
         </div>
 
-        <div className="space-y-4">
-          {documents.map((doc, i) => (
-            <motion.div
-              key={doc.name}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.05 }}
-              className="glass-card p-6 flex items-center justify-between group hover:glow-border transition-all cursor-pointer"
-            >
-              <div className="flex items-center gap-4">
-                <FileText className="w-8 h-8 text-nebula-400" />
-                <div>
-                  <p className="font-heading text-sm tracking-wider">{doc.name}</p>
-                  <p className="text-cosmic-white/30 text-xs mt-1">
-                    {doc.type} &middot; {doc.size} &middot; {doc.date}
-                  </p>
+        {documents.length > 0 ? (
+          <div className="space-y-4">
+            {documents.map((doc, i) => (
+              <motion.div
+                key={doc.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.05 }}
+                className="glass-card p-6 flex items-center justify-between group hover:glow-border transition-all cursor-pointer"
+              >
+                <div className="flex items-center gap-4">
+                  <FileText className="w-8 h-8 text-nebula-400" />
+                  <div>
+                    <p className="font-heading text-sm tracking-wider">{doc.name}</p>
+                    <p className="text-cosmic-white/30 text-xs mt-1">
+                      {doc.type} &middot; {doc.size} &middot; {doc.date}
+                    </p>
+                  </div>
                 </div>
-              </div>
-              <Download className="w-5 h-5 text-cosmic-white/20 group-hover:text-cosmic-gold transition-colors" />
-            </motion.div>
-          ))}
-        </div>
+                <Download className="w-5 h-5 text-cosmic-white/20 group-hover:text-cosmic-gold transition-colors" />
+              </motion.div>
+            ))}
+          </div>
+        ) : (
+          <div className="glass-card p-12 text-center">
+            <FolderOpen className="w-12 h-12 text-cosmic-white/20 mx-auto mb-4" />
+            <p className="text-cosmic-white/50">No documents available yet.</p>
+          </div>
+        )}
       </div>
     </div>
   );

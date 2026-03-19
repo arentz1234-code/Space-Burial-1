@@ -14,11 +14,8 @@ import {
   Briefcase,
   Download,
 } from "lucide-react";
-import {
-  companyMetrics,
-  revenueByMonth,
-  companyUpdates,
-} from "@/lib/mock-financials";
+import { companyMetrics, revenueByMonth } from "@/lib/mock-financials";
+import { useContent } from "@/components/providers/ContentProvider";
 
 // Mock investor data - would come from session in production
 const mockInvestor = {
@@ -27,32 +24,6 @@ const mockInvestor = {
   sharePrice: 5.0,
   investmentAmount: 100000,
   ownershipPercentage: 0.8,
-  documents: [
-    {
-      id: "doc-001",
-      name: "Non-Disclosure Agreement",
-      type: "nda",
-      date: "2025-08-30",
-    },
-    {
-      id: "doc-002",
-      name: "Investment Agreement",
-      type: "agreement",
-      date: "2025-09-01",
-    },
-    {
-      id: "doc-003",
-      name: "Q4 2025 Financial Report",
-      type: "report",
-      date: "2026-01-15",
-    },
-    {
-      id: "doc-004",
-      name: "2025 Annual Report",
-      type: "report",
-      date: "2026-02-15",
-    },
-  ],
 };
 
 const companyStats = [
@@ -70,6 +41,10 @@ const navItems = [
 ];
 
 export default function InvestorDashboard() {
+  const { content } = useContent();
+  const documents = content.investorDocuments || [];
+  const companyUpdates = content.companyUpdates || [];
+
   const currentValue = mockInvestor.shares * mockInvestor.sharePrice;
   const gain = currentValue - mockInvestor.investmentAmount;
   const gainPercentage = ((gain / mockInvestor.investmentAmount) * 100).toFixed(1);
@@ -247,7 +222,7 @@ export default function InvestorDashboard() {
               </Link>
             </div>
             <div className="space-y-3">
-              {mockInvestor.documents.slice(0, 4).map((doc) => (
+              {documents.slice(0, 4).map((doc) => (
                 <div
                   key={doc.id}
                   className="flex items-center justify-between p-3 bg-white/5 rounded-xl hover:bg-white/10 transition-colors"
@@ -264,6 +239,11 @@ export default function InvestorDashboard() {
                   </button>
                 </div>
               ))}
+              {documents.length === 0 && (
+                <p className="text-cosmic-white/40 text-sm text-center py-4">
+                  No documents available yet.
+                </p>
+              )}
             </div>
           </div>
         </div>
@@ -281,19 +261,25 @@ export default function InvestorDashboard() {
               View All
             </Link>
           </div>
-          <div className="space-y-6">
-            {companyUpdates.slice(0, 2).map((update) => (
-              <div key={update.date} className="border-l-2 border-nebula-500/30 pl-6">
-                <p className="text-xs text-cosmic-white/30 mb-1">{update.date}</p>
-                <h3 className="font-heading text-sm tracking-wider mb-2">
-                  {update.title}
-                </h3>
-                <p className="text-cosmic-white/50 text-sm leading-relaxed">
-                  {update.body}
-                </p>
-              </div>
-            ))}
-          </div>
+          {companyUpdates.length > 0 ? (
+            <div className="space-y-6">
+              {companyUpdates.slice(0, 2).map((update) => (
+                <div key={update.id} className="border-l-2 border-nebula-500/30 pl-6">
+                  <p className="text-xs text-cosmic-white/30 mb-1">{update.date}</p>
+                  <h3 className="font-heading text-sm tracking-wider mb-2">
+                    {update.title}
+                  </h3>
+                  <p className="text-cosmic-white/50 text-sm leading-relaxed">
+                    {update.body}
+                  </p>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-cosmic-white/40 text-sm text-center py-4">
+              No updates available yet.
+            </p>
+          )}
         </div>
       </div>
     </div>

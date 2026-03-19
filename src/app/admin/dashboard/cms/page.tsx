@@ -13,12 +13,14 @@ import {
   TrendingUp,
   Package,
   FileText,
-  Image,
   MessageSquare,
   Check,
   RotateCcw,
   Plus,
   Trash2,
+  FolderOpen,
+  ScrollText,
+  Megaphone,
 } from "lucide-react";
 import { useContent } from "@/components/providers/ContentProvider";
 
@@ -35,6 +37,9 @@ const contentSections = [
   { id: "testimonials", label: "Testimonials", icon: MessageSquare },
   { id: "hero", label: "Hero Section", icon: FileText },
   { id: "contact", label: "Contact Info", icon: FileText },
+  { id: "documents", label: "Investor Documents", icon: FolderOpen },
+  { id: "updates", label: "Company Updates", icon: Megaphone },
+  { id: "nda", label: "NDA Agreement", icon: ScrollText },
 ];
 
 export default function AdminCMS() {
@@ -52,10 +57,17 @@ export default function AdminCMS() {
   const [contactEmail, setContactEmail] = useState(content.contactEmail);
   const [contactPhone, setContactPhone] = useState(content.contactPhone);
   const [contactAddress, setContactAddress] = useState(content.contactAddress);
+  const [investorDocuments, setInvestorDocuments] = useState(content.investorDocuments || []);
+  const [companyUpdates, setCompanyUpdates] = useState(content.companyUpdates || []);
+  const [ndaText, setNdaText] = useState(content.ndaText || "");
 
-  // New testimonial form
+  // New item forms
   const [newTestimonial, setNewTestimonial] = useState({ quote: "", name: "", relation: "" });
   const [showAddTestimonial, setShowAddTestimonial] = useState(false);
+  const [newDocument, setNewDocument] = useState({ name: "", type: "PDF", date: "", size: "" });
+  const [showAddDocument, setShowAddDocument] = useState(false);
+  const [newUpdate, setNewUpdate] = useState({ title: "", body: "", date: "" });
+  const [showAddUpdate, setShowAddUpdate] = useState(false);
 
   // Sync local state with content store
   useEffect(() => {
@@ -67,6 +79,9 @@ export default function AdminCMS() {
     setContactEmail(content.contactEmail);
     setContactPhone(content.contactPhone);
     setContactAddress(content.contactAddress);
+    setInvestorDocuments(content.investorDocuments || []);
+    setCompanyUpdates(content.companyUpdates || []);
+    setNdaText(content.ndaText || "");
   }, [content]);
 
   const handleSave = async () => {
@@ -77,7 +92,7 @@ export default function AdminCMS() {
       updatePackage(pkg.id, pkg);
     });
 
-    // Save other content
+    // Save all content
     updateSiteContent({
       testimonials,
       heroTitle,
@@ -86,6 +101,9 @@ export default function AdminCMS() {
       contactEmail,
       contactPhone,
       contactAddress,
+      investorDocuments,
+      companyUpdates,
+      ndaText,
     });
 
     // Simulate save delay
@@ -101,6 +119,7 @@ export default function AdminCMS() {
     }
   };
 
+  // Package helpers
   const updateLocalPackage = (id: string, field: string, value: string | number) => {
     setPackages((prev) =>
       prev.map((pkg) => (pkg.id === id ? { ...pkg, [field]: value } : pkg))
@@ -120,6 +139,7 @@ export default function AdminCMS() {
     );
   };
 
+  // Testimonial helpers
   const updateLocalTestimonial = (id: string, field: string, value: string) => {
     setTestimonials((prev) =>
       prev.map((t) => (t.id === id ? { ...t, [field]: value } : t))
@@ -137,6 +157,61 @@ export default function AdminCMS() {
   const handleDeleteTestimonial = (id: string) => {
     if (confirm("Delete this testimonial?")) {
       deleteTestimonial(id);
+    }
+  };
+
+  // Document helpers
+  const handleAddDocument = () => {
+    if (newDocument.name && newDocument.type) {
+      const doc = {
+        id: `doc-${Date.now()}`,
+        name: newDocument.name,
+        type: newDocument.type,
+        date: newDocument.date || new Date().toISOString().split("T")[0],
+        size: newDocument.size || "1.0 MB",
+      };
+      setInvestorDocuments((prev) => [...prev, doc]);
+      setNewDocument({ name: "", type: "PDF", date: "", size: "" });
+      setShowAddDocument(false);
+    }
+  };
+
+  const updateLocalDocument = (id: string, field: string, value: string) => {
+    setInvestorDocuments((prev) =>
+      prev.map((d) => (d.id === id ? { ...d, [field]: value } : d))
+    );
+  };
+
+  const handleDeleteDocument = (id: string) => {
+    if (confirm("Delete this document?")) {
+      setInvestorDocuments((prev) => prev.filter((d) => d.id !== id));
+    }
+  };
+
+  // Company update helpers
+  const handleAddUpdate = () => {
+    if (newUpdate.title && newUpdate.body) {
+      const update = {
+        id: `update-${Date.now()}`,
+        title: newUpdate.title,
+        body: newUpdate.body,
+        date: newUpdate.date || new Date().toISOString().split("T")[0],
+      };
+      setCompanyUpdates((prev) => [update, ...prev]);
+      setNewUpdate({ title: "", body: "", date: "" });
+      setShowAddUpdate(false);
+    }
+  };
+
+  const updateLocalUpdate = (id: string, field: string, value: string) => {
+    setCompanyUpdates((prev) =>
+      prev.map((u) => (u.id === id ? { ...u, [field]: value } : u))
+    );
+  };
+
+  const handleDeleteUpdate = (id: string) => {
+    if (confirm("Delete this update?")) {
+      setCompanyUpdates((prev) => prev.filter((u) => u.id !== id));
     }
   };
 
@@ -540,6 +615,350 @@ export default function AdminCMS() {
                       rows={2}
                       className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm text-cosmic-white focus:outline-none focus:border-nebula-500 resize-none"
                     />
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {/* Documents Editor */}
+            {activeSection === "documents" && (
+              <div className="space-y-6">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <h3 className="font-heading tracking-wider">Investor Documents</h3>
+                    <p className="text-xs text-cosmic-white/50 mt-1">
+                      Manage documents visible to investors in their dashboard
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => setShowAddDocument(true)}
+                    className="btn-primary flex items-center gap-2 text-sm"
+                  >
+                    <Plus className="w-4 h-4" />
+                    Add Document
+                  </button>
+                </div>
+
+                {showAddDocument && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    className="glass-card p-6"
+                  >
+                    <h4 className="font-heading text-sm tracking-wider mb-4">New Document</h4>
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-xs font-heading tracking-wider text-cosmic-white/50 mb-2">
+                          Document Name
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="e.g., Q2 2026 Financial Report"
+                          value={newDocument.name}
+                          onChange={(e) => setNewDocument({ ...newDocument, name: e.target.value })}
+                          className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm text-cosmic-white focus:outline-none focus:border-nebula-500"
+                        />
+                      </div>
+                      <div className="grid grid-cols-3 gap-4">
+                        <div>
+                          <label className="block text-xs font-heading tracking-wider text-cosmic-white/50 mb-2">
+                            Type
+                          </label>
+                          <select
+                            value={newDocument.type}
+                            onChange={(e) => setNewDocument({ ...newDocument, type: e.target.value })}
+                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm text-cosmic-white focus:outline-none focus:border-nebula-500"
+                          >
+                            <option value="PDF">PDF</option>
+                            <option value="XLSX">XLSX</option>
+                            <option value="DOCX">DOCX</option>
+                            <option value="PPT">PPT</option>
+                          </select>
+                        </div>
+                        <div>
+                          <label className="block text-xs font-heading tracking-wider text-cosmic-white/50 mb-2">
+                            Date
+                          </label>
+                          <input
+                            type="date"
+                            value={newDocument.date}
+                            onChange={(e) => setNewDocument({ ...newDocument, date: e.target.value })}
+                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm text-cosmic-white focus:outline-none focus:border-nebula-500"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-heading tracking-wider text-cosmic-white/50 mb-2">
+                            File Size
+                          </label>
+                          <input
+                            type="text"
+                            placeholder="e.g., 2.5 MB"
+                            value={newDocument.size}
+                            onChange={(e) => setNewDocument({ ...newDocument, size: e.target.value })}
+                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm text-cosmic-white focus:outline-none focus:border-nebula-500"
+                          />
+                        </div>
+                      </div>
+                      <div className="flex gap-3 justify-end">
+                        <button onClick={() => setShowAddDocument(false)} className="btn-secondary">
+                          Cancel
+                        </button>
+                        <button onClick={handleAddDocument} className="btn-primary">
+                          Add Document
+                        </button>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+
+                {investorDocuments.map((doc, i) => (
+                  <motion.div
+                    key={doc.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: i * 0.05 }}
+                    className="glass-card p-6"
+                  >
+                    <div className="flex justify-between items-start mb-4">
+                      <FolderOpen className="w-5 h-5 text-cosmic-gold" />
+                      <button
+                        onClick={() => handleDeleteDocument(doc.id)}
+                        className="p-2 hover:bg-red-500/20 rounded-lg transition-colors text-cosmic-white/50 hover:text-red-400"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                    <div className="grid md:grid-cols-4 gap-4">
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-heading tracking-wider text-cosmic-white/50 mb-2">
+                          Document Name
+                        </label>
+                        <input
+                          type="text"
+                          value={doc.name}
+                          onChange={(e) => updateLocalDocument(doc.id, "name", e.target.value)}
+                          className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm text-cosmic-white focus:outline-none focus:border-nebula-500"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-heading tracking-wider text-cosmic-white/50 mb-2">
+                          Type
+                        </label>
+                        <select
+                          value={doc.type}
+                          onChange={(e) => updateLocalDocument(doc.id, "type", e.target.value)}
+                          className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm text-cosmic-white focus:outline-none focus:border-nebula-500"
+                        >
+                          <option value="PDF">PDF</option>
+                          <option value="XLSX">XLSX</option>
+                          <option value="DOCX">DOCX</option>
+                          <option value="PPT">PPT</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-xs font-heading tracking-wider text-cosmic-white/50 mb-2">
+                          Size
+                        </label>
+                        <input
+                          type="text"
+                          value={doc.size}
+                          onChange={(e) => updateLocalDocument(doc.id, "size", e.target.value)}
+                          className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm text-cosmic-white focus:outline-none focus:border-nebula-500"
+                        />
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+
+                {investorDocuments.length === 0 && (
+                  <div className="glass-card p-12 text-center">
+                    <FolderOpen className="w-12 h-12 text-cosmic-white/20 mx-auto mb-4" />
+                    <p className="text-cosmic-white/50">No documents yet. Add your first document above.</p>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Company Updates Editor */}
+            {activeSection === "updates" && (
+              <div className="space-y-6">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <h3 className="font-heading tracking-wider">Company Updates</h3>
+                    <p className="text-xs text-cosmic-white/50 mt-1">
+                      News and updates visible to investors
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => setShowAddUpdate(true)}
+                    className="btn-primary flex items-center gap-2 text-sm"
+                  >
+                    <Plus className="w-4 h-4" />
+                    Add Update
+                  </button>
+                </div>
+
+                {showAddUpdate && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    className="glass-card p-6"
+                  >
+                    <h4 className="font-heading text-sm tracking-wider mb-4">New Company Update</h4>
+                    <div className="space-y-4">
+                      <div className="grid md:grid-cols-3 gap-4">
+                        <div className="md:col-span-2">
+                          <label className="block text-xs font-heading tracking-wider text-cosmic-white/50 mb-2">
+                            Title
+                          </label>
+                          <input
+                            type="text"
+                            placeholder="e.g., Q2 Launch Partnership Announced"
+                            value={newUpdate.title}
+                            onChange={(e) => setNewUpdate({ ...newUpdate, title: e.target.value })}
+                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm text-cosmic-white focus:outline-none focus:border-nebula-500"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-heading tracking-wider text-cosmic-white/50 mb-2">
+                            Date
+                          </label>
+                          <input
+                            type="date"
+                            value={newUpdate.date}
+                            onChange={(e) => setNewUpdate({ ...newUpdate, date: e.target.value })}
+                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm text-cosmic-white focus:outline-none focus:border-nebula-500"
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-xs font-heading tracking-wider text-cosmic-white/50 mb-2">
+                          Content
+                        </label>
+                        <textarea
+                          placeholder="Write your update here..."
+                          value={newUpdate.body}
+                          onChange={(e) => setNewUpdate({ ...newUpdate, body: e.target.value })}
+                          rows={4}
+                          className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm text-cosmic-white focus:outline-none focus:border-nebula-500 resize-none"
+                        />
+                      </div>
+                      <div className="flex gap-3 justify-end">
+                        <button onClick={() => setShowAddUpdate(false)} className="btn-secondary">
+                          Cancel
+                        </button>
+                        <button onClick={handleAddUpdate} className="btn-primary">
+                          Add Update
+                        </button>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+
+                {companyUpdates.map((update, i) => (
+                  <motion.div
+                    key={update.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: i * 0.05 }}
+                    className="glass-card p-6"
+                  >
+                    <div className="flex justify-between items-start mb-4">
+                      <div className="flex items-center gap-3">
+                        <Megaphone className="w-5 h-5 text-stellar-400" />
+                        <span className="text-xs text-cosmic-white/50">{update.date}</span>
+                      </div>
+                      <button
+                        onClick={() => handleDeleteUpdate(update.id)}
+                        className="p-2 hover:bg-red-500/20 rounded-lg transition-colors text-cosmic-white/50 hover:text-red-400"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-xs font-heading tracking-wider text-cosmic-white/50 mb-2">
+                          Title
+                        </label>
+                        <input
+                          type="text"
+                          value={update.title}
+                          onChange={(e) => updateLocalUpdate(update.id, "title", e.target.value)}
+                          className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm text-cosmic-white focus:outline-none focus:border-nebula-500"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-heading tracking-wider text-cosmic-white/50 mb-2">
+                          Content
+                        </label>
+                        <textarea
+                          value={update.body}
+                          onChange={(e) => updateLocalUpdate(update.id, "body", e.target.value)}
+                          rows={3}
+                          className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm text-cosmic-white focus:outline-none focus:border-nebula-500 resize-none"
+                        />
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+
+                {companyUpdates.length === 0 && (
+                  <div className="glass-card p-12 text-center">
+                    <Megaphone className="w-12 h-12 text-cosmic-white/20 mx-auto mb-4" />
+                    <p className="text-cosmic-white/50">No updates yet. Add your first company update above.</p>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* NDA Editor */}
+            {activeSection === "nda" && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="space-y-6"
+              >
+                <div className="glass-card p-6">
+                  <div className="flex items-center gap-3 mb-6">
+                    <ScrollText className="w-5 h-5 text-nebula-400" />
+                    <div>
+                      <h3 className="font-heading tracking-wider">NDA Agreement</h3>
+                      <p className="text-xs text-cosmic-white/50 mt-1">
+                        This document is shown to investors during signup
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-xs font-heading tracking-wider text-cosmic-white/50 mb-2">
+                        NDA Text
+                      </label>
+                      <textarea
+                        value={ndaText}
+                        onChange={(e) => setNdaText(e.target.value)}
+                        rows={20}
+                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-cosmic-white focus:outline-none focus:border-nebula-500 resize-none font-mono leading-relaxed"
+                        placeholder="Enter the NDA agreement text here..."
+                      />
+                    </div>
+
+                    <div className="p-4 bg-stellar-400/10 rounded-xl border border-stellar-400/20">
+                      <p className="text-xs text-stellar-400 leading-relaxed">
+                        <strong>Note:</strong> The signature prompt &quot;By typing your full legal name below...&quot;
+                        should be included at the end of the NDA text. Investors must scroll to the bottom and
+                        type their full legal name to sign.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="glass-card p-6">
+                  <h4 className="font-heading text-sm tracking-wider mb-4">Preview</h4>
+                  <div className="bg-white/5 rounded-xl p-6 max-h-64 overflow-y-auto">
+                    <pre className="text-xs text-cosmic-white/70 whitespace-pre-wrap font-mono leading-relaxed">
+                      {ndaText || "No NDA text entered yet."}
+                    </pre>
                   </div>
                 </div>
               </motion.div>
