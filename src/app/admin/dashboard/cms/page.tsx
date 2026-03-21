@@ -24,6 +24,7 @@ import {
   Star,
   Rocket,
   Crown,
+  UserCheck,
 } from "lucide-react";
 import { useContent } from "@/components/providers/ContentProvider";
 import { getTiers, saveTiers, resetTiers, Tier, TierLevel } from "@/lib/tiers";
@@ -31,6 +32,7 @@ import { getTiers, saveTiers, resetTiers, Tier, TierLevel } from "@/lib/tiers";
 const navItems = [
   { href: "/admin/dashboard", label: "Overview", icon: BarChart3 },
   { href: "/admin/dashboard/users", label: "Users", icon: Users },
+  { href: "/admin/dashboard/investors", label: "Investors", icon: UserCheck },
   { href: "/admin/dashboard/cms", label: "CMS", icon: FileEdit, active: true },
   { href: "/admin/dashboard/analytics", label: "Analytics", icon: TrendingUp },
   { href: "/admin/dashboard/settings", label: "Settings", icon: Settings },

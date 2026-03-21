@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import StarField from "@/components/shared/StarField";
-import { Rocket, AlertCircle, Sparkles } from "lucide-react";
+import { Rocket, AlertCircle, Sparkles, Zap } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -35,13 +35,24 @@ export default function LoginPage() {
       } else if (data.error === "NDA_REQUIRED") {
         setError("Please sign the NDA before accessing your account.");
       } else {
-        setError("Invalid credentials. Please try again.");
+        setError("Invalid credentials. Use the demo buttons below.");
       }
     } catch {
       setError("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
+  };
+
+  const loadCredentials = (type: "admin" | "immortal") => {
+    if (type === "admin") {
+      setEmail("admin@spaceburial.com");
+      setPassword("admin123");
+    } else {
+      setEmail("eternal@example.com");
+      setPassword("eternal123");
+    }
+    setError("");
   };
 
   return (
@@ -109,20 +120,32 @@ export default function LoginPage() {
               {loading ? "Signing in..." : "Sign In"}
             </button>
 
+            {/* Demo credentials section */}
             <div className="border-t border-white/10 pt-6">
               <p className="text-center text-xs text-cosmic-white/30 mb-4">
                 Demo Accounts
               </p>
-              <div className="space-y-2 text-xs text-cosmic-white/50">
-                <div className="flex items-center gap-2">
-                  <Sparkles className="w-3 h-3 text-cosmic-gold" />
-                  <span>Admin: admin@spaceburial.com / admin123</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Rocket className="w-3 h-3 text-nebula-400" />
-                  <span>Immortal: eternal@example.com / eternal123</span>
-                </div>
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  onClick={() => loadCredentials("admin")}
+                  className="flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-cosmic-gold/10 border border-cosmic-gold/30 text-cosmic-gold text-xs font-heading tracking-wider hover:bg-cosmic-gold/20 transition-colors"
+                >
+                  <Sparkles className="w-4 h-4" />
+                  Admin
+                </button>
+                <button
+                  type="button"
+                  onClick={() => loadCredentials("immortal")}
+                  className="flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-nebula-500/10 border border-nebula-500/30 text-nebula-400 text-xs font-heading tracking-wider hover:bg-nebula-500/20 transition-colors"
+                >
+                  <Rocket className="w-4 h-4" />
+                  Immortal
+                </button>
               </div>
+              <p className="text-center text-xs text-cosmic-white/30 mt-3">
+                Click to auto-fill demo credentials
+              </p>
             </div>
           </form>
 

@@ -36,7 +36,7 @@ export const defaultTiers: Tier[] = [
     id: "voyager",
     name: "Voyager",
     tagline: "Journey Beyond",
-    price: 5000,
+    price: 4800,
     description: "An elevated experience with VIP launch access, a cinematic video memorial, and family ceremony coordination for a truly memorable send-off.",
     features: [
       "Everything in Stardust, plus:",
@@ -54,7 +54,7 @@ export const defaultTiers: Tier[] = [
     id: "eternal",
     name: "Eternal",
     tagline: "Forever Among the Stars",
-    price: 7000,
+    price: 6800,
     description: "The ultimate tribute. Includes our Digital Voice technology, allowing loved ones to have meaningful conversations with your memory for generations to come.",
     features: [
       "Everything in Voyager, plus:",

@@ -48,15 +48,15 @@ export default function Navbar() {
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-space-900/80 backdrop-blur-lg border-b border-white/5">
-      <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-6 h-24 sm:h-28 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center">
           <Image
             src="/images/logo.png"
             alt="Space Burial - Immortality Among the Stars"
-            width={180}
-            height={60}
-            className="h-14 w-auto"
+            width={240}
+            height={80}
+            className="h-16 sm:h-20 w-auto"
             priority
           />
         </Link>

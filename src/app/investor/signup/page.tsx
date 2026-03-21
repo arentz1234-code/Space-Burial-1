@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import StarField from "@/components/shared/StarField";
-import { FileText, AlertCircle, CheckCircle, Shield } from "lucide-react";
+import { FileText, AlertCircle, CheckCircle, Shield, CreditCard, ExternalLink, DollarSign } from "lucide-react";
 import { useContent } from "@/components/providers/ContentProvider";
 
 export default function InvestorSignup() {
@@ -30,6 +30,20 @@ export default function InvestorSignup() {
   const [ndaScrolled, setNdaScrolled] = useState(false);
   const [signature, setSignature] = useState("");
   const [agreedToTerms, setAgreedToTerms] = useState(false);
+
+  // Step 3: Investment amount
+  const [investmentAmount, setInvestmentAmount] = useState("");
+  const [paymentConfirmed, setPaymentConfirmed] = useState(false);
+
+  const investmentTiers = [
+    { amount: 10000, label: "$10,000", shares: "1,000 shares" },
+    { amount: 25000, label: "$25,000", shares: "2,500 shares" },
+    { amount: 50000, label: "$50,000", shares: "5,000 shares" },
+    { amount: 100000, label: "$100,000", shares: "10,000 shares" },
+  ];
+
+  // Stripe payment link - replace with your actual Stripe payment link
+  const stripePaymentLink = "https://buy.stripe.com/test_yourlink";
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const target = e.target as HTMLDivElement;
@@ -57,7 +71,7 @@ export default function InvestorSignup() {
     setStep(2);
   };
 
-  const handleFinalSubmit = async (e: React.FormEvent) => {
+  const handleStep2Submit = (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
@@ -76,6 +90,23 @@ export default function InvestorSignup() {
       return;
     }
 
+    setStep(3);
+  };
+
+  const handleFinalSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+
+    if (!investmentAmount) {
+      setError("Please select an investment amount");
+      return;
+    }
+
+    if (!paymentConfirmed) {
+      setError("Please confirm your payment method");
+      return;
+    }
+
     setLoading(true);
 
     // Mock signup - in production, call API
@@ -83,6 +114,13 @@ export default function InvestorSignup() {
 
     // Redirect to success page
     router.push("/investor/signup/success");
+  };
+
+  const handleStripePayment = () => {
+    // Open Stripe payment link in new tab
+    // In production, you'd pass the selected amount as a parameter
+    window.open(`${stripePaymentLink}?amount=${investmentAmount}`, "_blank");
+    setPaymentConfirmed(true);
   };
 
   return (
@@ -102,7 +140,7 @@ export default function InvestorSignup() {
               1
             </div>
             <div
-              className={`w-16 h-0.5 ${
+              className={`w-12 h-0.5 ${
                 step >= 2 ? "bg-cosmic-gold" : "bg-white/10"
               }`}
             />
@@ -114,6 +152,20 @@ export default function InvestorSignup() {
               }`}
             >
               2
+            </div>
+            <div
+              className={`w-12 h-0.5 ${
+                step >= 3 ? "bg-cosmic-gold" : "bg-white/10"
+              }`}
+            />
+            <div
+              className={`w-10 h-10 rounded-full flex items-center justify-center font-heading ${
+                step >= 3
+                  ? "bg-cosmic-gold text-space-black"
+                  : "bg-white/10 text-cosmic-white/50"
+              }`}
+            >
+              3
             </div>
           </div>
 
@@ -262,7 +314,7 @@ export default function InvestorSignup() {
                 </div>
 
                 <form
-                  onSubmit={handleFinalSubmit}
+                  onSubmit={handleStep2Submit}
                   className="glass-card p-8 space-y-6"
                 >
                   {error && (
@@ -340,10 +392,186 @@ export default function InvestorSignup() {
                     </button>
                     <button
                       type="submit"
-                      disabled={loading || !ndaScrolled || !agreedToTerms}
+                      disabled={!ndaScrolled || !agreedToTerms}
                       className="w-full flex-1 py-3 px-6 rounded-xl font-heading tracking-wider text-sm bg-gradient-to-r from-cosmic-gold to-yellow-500 text-space-black hover:opacity-90 transition-opacity disabled:opacity-50"
                     >
-                      {loading ? "Submitting..." : "Sign & Submit"}
+                      Continue to Investment
+                    </button>
+                  </div>
+                </form>
+              </>
+            )}
+
+            {step === 3 && (
+              <>
+                <div className="text-center mb-8">
+                  <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-cosmic-gold/20 flex items-center justify-center">
+                    <DollarSign className="w-8 h-8 text-cosmic-gold" />
+                  </div>
+                  <h1 className="font-heading text-2xl tracking-wider mb-2">
+                    Investment Amount
+                  </h1>
+                  <p className="text-cosmic-white/50 text-sm">
+                    Select your investment tier and complete payment
+                  </p>
+                </div>
+
+                <form
+                  onSubmit={handleFinalSubmit}
+                  className="glass-card p-8 space-y-6"
+                >
+                  {error && (
+                    <div className="flex items-center gap-2 text-red-400 text-sm bg-red-400/10 p-3 rounded-xl">
+                      <AlertCircle className="w-4 h-4 shrink-0" />
+                      {error}
+                    </div>
+                  )}
+
+                  {/* Investment Tiers */}
+                  <div className="space-y-3">
+                    <label className="block text-xs font-heading tracking-wider text-cosmic-white/50 mb-3">
+                      Select Investment Amount
+                    </label>
+                    {investmentTiers.map((tier) => (
+                      <button
+                        key={tier.amount}
+                        type="button"
+                        onClick={() => {
+                          setInvestmentAmount(tier.amount.toString());
+                          setPaymentConfirmed(false);
+                        }}
+                        className={`w-full p-4 rounded-xl border transition-all text-left ${
+                          investmentAmount === tier.amount.toString()
+                            ? "border-cosmic-gold bg-cosmic-gold/10"
+                            : "border-white/10 bg-white/5 hover:border-white/20"
+                        }`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <span className="font-heading text-xl text-cosmic-white">
+                              {tier.label}
+                            </span>
+                            <p className="text-sm text-cosmic-white/50 mt-1">
+                              {tier.shares}
+                            </p>
+                          </div>
+                          <div
+                            className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                              investmentAmount === tier.amount.toString()
+                                ? "border-cosmic-gold"
+                                : "border-white/30"
+                            }`}
+                          >
+                            {investmentAmount === tier.amount.toString() && (
+                              <div className="w-2.5 h-2.5 rounded-full bg-cosmic-gold" />
+                            )}
+                          </div>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Custom Amount */}
+                  <div>
+                    <label className="block text-xs font-heading tracking-wider text-cosmic-white/50 mb-2">
+                      Or Enter Custom Amount (Min. $10,000)
+                    </label>
+                    <div className="relative">
+                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-cosmic-white/50">
+                        $
+                      </span>
+                      <input
+                        type="number"
+                        min="10000"
+                        step="1000"
+                        value={investmentAmount}
+                        onChange={(e) => {
+                          setInvestmentAmount(e.target.value);
+                          setPaymentConfirmed(false);
+                        }}
+                        className="w-full bg-white/5 border border-white/10 rounded-xl pl-8 pr-4 py-3 text-sm text-cosmic-white focus:outline-none focus:border-cosmic-gold/50 transition-colors"
+                        placeholder="10000"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Stripe Payment Button */}
+                  {investmentAmount && parseInt(investmentAmount) >= 10000 && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="space-y-4"
+                    >
+                      <div className="border-t border-white/10 pt-6">
+                        <div className="flex items-center justify-between mb-4">
+                          <span className="text-cosmic-white/70">Investment Amount:</span>
+                          <span className="font-heading text-2xl text-cosmic-gold">
+                            ${parseInt(investmentAmount).toLocaleString()}
+                          </span>
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={handleStripePayment}
+                          className={`w-full py-4 px-6 rounded-xl font-heading tracking-wider text-sm flex items-center justify-center gap-3 transition-all ${
+                            paymentConfirmed
+                              ? "bg-green-500/20 border border-green-500/30 text-green-400"
+                              : "bg-[#635BFF] hover:bg-[#5851ea] text-white"
+                          }`}
+                        >
+                          {paymentConfirmed ? (
+                            <>
+                              <CheckCircle className="w-5 h-5" />
+                              Payment Link Opened
+                            </>
+                          ) : (
+                            <>
+                              <CreditCard className="w-5 h-5" />
+                              Pay with Stripe
+                              <ExternalLink className="w-4 h-4" />
+                            </>
+                          )}
+                        </button>
+
+                        {paymentConfirmed && (
+                          <p className="text-xs text-cosmic-white/50 mt-3 text-center">
+                            Complete your payment in the Stripe window, then click Submit below
+                          </p>
+                        )}
+                      </div>
+                    </motion.div>
+                  )}
+
+                  {/* Payment confirmation checkbox */}
+                  {investmentAmount && parseInt(investmentAmount) >= 10000 && (
+                    <label className="flex items-start gap-3 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={paymentConfirmed}
+                        onChange={(e) => setPaymentConfirmed(e.target.checked)}
+                        className="mt-1 w-4 h-4 rounded border-white/20 bg-white/5 text-cosmic-gold focus:ring-cosmic-gold"
+                      />
+                      <span className="text-sm text-cosmic-white/70">
+                        I have completed my payment through Stripe or will complete wire transfer
+                        within 5 business days.
+                      </span>
+                    </label>
+                  )}
+
+                  <div className="flex gap-4">
+                    <button
+                      type="button"
+                      onClick={() => setStep(2)}
+                      className="btn-secondary flex-1"
+                    >
+                      Back
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={loading || !investmentAmount || parseInt(investmentAmount) < 10000 || !paymentConfirmed}
+                      className="w-full flex-1 py-3 px-6 rounded-xl font-heading tracking-wider text-sm bg-gradient-to-r from-cosmic-gold to-yellow-500 text-space-black hover:opacity-90 transition-opacity disabled:opacity-50"
+                    >
+                      {loading ? "Submitting..." : "Complete Application"}
                     </button>
                   </div>
                 </form>

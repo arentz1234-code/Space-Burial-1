@@ -28,6 +28,7 @@ import { getTiers } from "@/lib/tiers";
 const navItems = [
   { href: "/admin/dashboard", label: "Overview", icon: BarChart3 },
   { href: "/admin/dashboard/users", label: "Users", icon: Users, active: true },
+  { href: "/admin/dashboard/investors", label: "Investors", icon: UserCheck },
   { href: "/admin/dashboard/cms", label: "CMS", icon: FileEdit },
   { href: "/admin/dashboard/analytics", label: "Analytics", icon: TrendingUp },
   { href: "/admin/dashboard/settings", label: "Settings", icon: Settings },

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import StarField from "@/components/shared/StarField";
-import { Lock, AlertCircle, FileText } from "lucide-react";
+import { Lock, AlertCircle, FileText, Zap } from "lucide-react";
 
 export default function InvestorLogin() {
   const router = useRouter();
@@ -39,13 +39,19 @@ export default function InvestorLogin() {
       } else if (data.error === "NDA_REQUIRED") {
         router.push(`/investor/signup?userId=${data.userId}`);
       } else {
-        setError("Invalid credentials. Try demo@spaceburial.com / investor123");
+        setError("Invalid credentials. Click the demo button below to load test credentials.");
       }
     } catch {
       setError("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
+  };
+
+  const loadDemoCredentials = () => {
+    setEmail("demo@spaceburial.com");
+    setPassword("investor123");
+    setError("");
   };
 
   return (
@@ -113,9 +119,20 @@ export default function InvestorLogin() {
               {loading ? "Signing in..." : "Sign In"}
             </button>
 
-            <p className="text-center text-xs text-cosmic-white/30">
-              Demo: demo@spaceburial.com / investor123
-            </p>
+            {/* Demo credentials button */}
+            <div className="border-t border-white/10 pt-4">
+              <button
+                type="button"
+                onClick={loadDemoCredentials}
+                className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-cosmic-gold/10 border border-cosmic-gold/30 text-cosmic-gold text-sm font-heading tracking-wider hover:bg-cosmic-gold/20 transition-colors"
+              >
+                <Zap className="w-4 h-4" />
+                Load Demo Credentials
+              </button>
+              <p className="text-center text-xs text-cosmic-white/30 mt-3">
+                Click above to auto-fill investor demo login
+              </p>
+            </div>
           </form>
 
           <div className="mt-6 space-y-3 text-center">

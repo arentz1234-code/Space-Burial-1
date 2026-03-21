@@ -12,9 +12,9 @@ export default function Footer() {
               <Image
                 src="/images/logo.png"
                 alt="Space Burial - Immortality Among the Stars"
-                width={150}
-                height={50}
-                className="h-16 w-auto"
+                width={220}
+                height={70}
+                className="h-20 sm:h-24 w-auto"
               />
             </Link>
             <p className="text-cosmic-white/50 text-sm leading-relaxed max-w-sm">
