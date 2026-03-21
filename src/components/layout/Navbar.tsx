@@ -72,7 +72,7 @@ export default function Navbar() {
               {link.label}
             </Link>
           ))}
-          <Link href="/services" className="btn-primary text-xs">
+          <Link href="/checkout" className="btn-primary text-xs">
             Reserve Now
           </Link>
 

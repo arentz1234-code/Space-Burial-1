@@ -2,13 +2,13 @@
 
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
-import { ClipboardList, Package, Rocket, Satellite } from "lucide-react";
+import Link from "next/link";
 
 const steps = [
-  { icon: ClipboardList, title: "Choose & Reserve", description: "Select your memorial package and complete your reservation online." },
-  { icon: Package, title: "Prepare Capsule", description: "We receive the remains and prepare a custom memorial capsule." },
-  { icon: Rocket, title: "Launch Day", description: "Witness the launch live or via HD stream as your tribute ascends." },
-  { icon: Satellite, title: "Track Forever", description: "Follow the memorial's journey with lifetime mission tracking." },
+  { num: "01", title: "Reserve", description: "Choose your memorial and secure your spot." },
+  { num: "02", title: "Prepare", description: "We build a custom capsule for the mission." },
+  { num: "03", title: "Launch", description: "Watch live as your tribute ascends." },
+  { num: "04", title: "Track", description: "Follow the journey forever." },
 ];
 
 export default function HowItWorksPreview() {
@@ -16,47 +16,48 @@ export default function HowItWorksPreview() {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <section ref={ref} className="py-32 px-6">
-      <div className="max-w-7xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
+    <section ref={ref} className="py-28 sm:py-36 px-6 bg-space-800/50">
+      <div className="max-w-5xl mx-auto">
+        <motion.h2
+          initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          className="text-center mb-20"
+          className="text-3xl sm:text-4xl md:text-5xl font-heading font-bold text-center mb-20"
         >
-          <p className="font-heading text-xs tracking-[0.3em] uppercase text-nebula-400 mb-4">
-            The Process
-          </p>
-          <h2 className="text-4xl md:text-5xl font-heading font-bold">
-            How It <span className="text-gradient">Works</span>
-          </h2>
-        </motion.div>
+          How It Works
+        </motion.h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 sm:gap-12 mb-16">
           {steps.map((step, i) => (
             <motion.div
-              key={step.title}
-              initial={{ opacity: 0, y: 40 }}
+              key={step.num}
+              initial={{ opacity: 0, y: 30 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ delay: i * 0.15 }}
-              className="text-center relative"
+              transition={{ delay: 0.2 + i * 0.1 }}
+              className="text-center"
             >
-              {/* Connector line */}
-              {i < steps.length - 1 && (
-                <div className="hidden md:block absolute top-10 left-[60%] w-[80%] h-px bg-gradient-to-r from-nebula-500/50 to-transparent" />
-              )}
-
-              <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-nebula-500/20 to-stellar-500/20 flex items-center justify-center border border-nebula-500/30">
-                <step.icon className="w-9 h-9 text-nebula-400" />
-              </div>
-
-              <span className="font-heading text-xs text-cosmic-gold tracking-widest">
-                Step {i + 1}
+              <span className="block font-heading text-3xl sm:text-4xl text-nebula-400/30 mb-3">
+                {step.num}
               </span>
-              <h3 className="font-heading text-sm tracking-wider mt-2 mb-3">{step.title}</h3>
-              <p className="text-cosmic-white/50 text-sm">{step.description}</p>
+              <h3 className="font-heading text-sm tracking-[0.15em] uppercase mb-2">
+                {step.title}
+              </h3>
+              <p className="text-cosmic-white/40 text-xs sm:text-sm leading-relaxed">
+                {step.description}
+              </p>
             </motion.div>
           ))}
         </div>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={isInView ? { opacity: 1 } : {}}
+          transition={{ delay: 0.8 }}
+          className="text-center"
+        >
+          <Link href="/how-it-works" className="text-sm text-cosmic-gold hover:text-cosmic-gold/80 transition-colors font-heading tracking-wider uppercase">
+            Learn more about the process
+          </Link>
+        </motion.div>
       </div>
     </section>
   );

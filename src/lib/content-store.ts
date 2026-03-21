@@ -88,21 +88,21 @@ export const defaultContent: SiteContent = {
     {
       id: "test-1",
       quote:
-        "My father dedicated his life to astronomy. Knowing he's among the stars now brings our family incredible peace.",
+        "Dad spent 40 years teaching physics and pointing out constellations from the backyard. This was the only memorial that made sense for him.",
       name: "Sarah M.",
       relation: "Daughter",
     },
     {
       id: "test-2",
       quote:
-        "The ceremony was beautiful, and watching the launch was the most emotional experience of my life. Worth every penny.",
+        "I was skeptical at first. But watching that rocket go up with my mom's ashes inside... nothing has ever hit me like that.",
       name: "James K.",
       relation: "Son",
     },
     {
       id: "test-3",
       quote:
-        "Space Burial made the entire process seamless during the hardest time of our lives. Truly the ultimate tribute.",
+        "They walked us through every step during the worst month of our lives. The launch gave us something to look forward to.",
       name: "Maria L.",
       relation: "Spouse",
     },
