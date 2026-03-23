@@ -79,16 +79,6 @@ export default function HeroSection() {
           <span className="text-gradient">to the Stars</span>
         </motion.h1>
 
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.7, duration: 0.8 }}
-          className="text-lg sm:text-xl text-cosmic-white/60 max-w-2xl mx-auto mb-10"
-        >
-          The ultimate tribute. Launch your loved one&apos;s ashes into space aboard a real rocket —
-          forever orbiting among the stars.
-        </motion.p>
-
         {/* Trust indicators */}
         <motion.div
           initial={{ opacity: 0 }}
