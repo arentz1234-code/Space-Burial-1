@@ -55,16 +55,16 @@ export default function InvestorLogin() {
   };
 
   return (
-    <div className="relative min-h-screen">
+    <div className="min-h-screen bg-space-900">
       <StarField />
-      <div className="relative z-10 px-4 sm:px-6 pt-28 sm:pt-32 pb-12">
+      <div className="relative z-10 max-w-lg mx-auto px-4 sm:px-6 pt-28 sm:pt-32 pb-12">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           className="w-full max-w-lg mx-auto"
         >
           {/* SEC Disclaimer */}
-          <div className="bg-red-500/10 border border-red-500/30 rounded-2xl p-6 mb-8">
+          <div className="bg-space-800 border border-red-500/30 rounded-2xl p-6 mb-8">
             <div className="flex items-start gap-4">
               <div className="w-12 h-12 rounded-xl bg-red-500/20 flex items-center justify-center shrink-0">
                 <AlertTriangle className="w-6 h-6 text-red-400" />
