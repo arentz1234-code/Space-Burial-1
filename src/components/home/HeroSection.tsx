@@ -73,7 +73,7 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 0.8 }}
-          className="text-4xl sm:text-6xl md:text-8xl font-heading font-black leading-tight mb-6"
+          className="text-3xl sm:text-5xl md:text-6xl lg:text-8xl font-heading font-black leading-tight mb-4 sm:mb-6"
         >
           Send Your Legacy{" "}
           <span className="text-gradient">to the Stars</span>
@@ -84,7 +84,7 @@ export default function HeroSection() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.9, duration: 0.6 }}
-          className="flex flex-wrap justify-center gap-6 mb-10 text-cosmic-white/40"
+          className="flex flex-wrap justify-center gap-3 sm:gap-6 mb-8 sm:mb-10 text-cosmic-white/40"
         >
           <div className="flex items-center gap-2 text-xs">
             <Rocket className="w-4 h-4" />
@@ -106,10 +106,10 @@ export default function HeroSection() {
           transition={{ delay: 1.1, duration: 0.8 }}
           className="flex flex-col sm:flex-row gap-4 justify-center"
         >
-          <Link href="/checkout" className="btn-primary text-base px-8 py-4">
+          <Link href="/checkout" className="btn-primary text-sm sm:text-base px-6 py-3 sm:px-8 sm:py-4">
             Reserve Your Memorial
           </Link>
-          <Link href="/how-it-works" className="btn-secondary text-base px-8 py-4">
+          <Link href="/how-it-works" className="btn-secondary text-sm sm:text-base px-6 py-3 sm:px-8 sm:py-4">
             See How It Works
           </Link>
         </motion.div>

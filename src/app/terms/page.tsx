@@ -111,19 +111,57 @@ export default function TermsOfServicePage() {
                 It is your responsibility to ensure that all personal, billing and payment information provided to us is up-to-date and accurate.
               </p>
 
-              <h2 className="font-heading text-xl tracking-wider text-cosmic-white mb-4">8. ENFORCEABILITY</h2>
+              <h2 className="font-heading text-xl tracking-wider text-cosmic-white mb-4">8. SECURITIES INVESTMENT TERMS</h2>
+
+              <p className="text-cosmic-white/70 leading-relaxed mb-4">
+                The following terms apply specifically to investors who purchase securities in Spaceburial.com Corporation through our investor portal.
+              </p>
+
+              <p className="text-cosmic-white/70 leading-relaxed mb-4">
+                <strong className="text-cosmic-white">a. Securities Offering.</strong> Any securities offered through our Website are offered pursuant to Rule 506(c) of Regulation D under the Securities Act of 1933, as amended. These securities have not been registered with the Securities and Exchange Commission or any state securities regulatory authority and are being offered only to verified accredited investors.
+              </p>
+
+              <p className="text-cosmic-white/70 leading-relaxed mb-4">
+                <strong className="text-cosmic-white">b. No Investment Advice.</strong> Nothing on this Website constitutes investment, legal, or tax advice. You should consult with your own financial advisor, attorney, and accountant before making any investment decision. We do not provide recommendations regarding whether this investment is suitable for you.
+              </p>
+
+              <p className="text-cosmic-white/70 leading-relaxed mb-4">
+                <strong className="text-cosmic-white">c. Risk of Loss.</strong> Investment in early-stage companies involves a high degree of risk. You should be prepared to lose your entire investment. Past performance is not indicative of future results. Forward-looking statements are subject to significant uncertainties and actual results may differ materially.
+              </p>
+
+              <p className="text-cosmic-white/70 leading-relaxed mb-4">
+                <strong className="text-cosmic-white">d. Restricted Securities.</strong> The securities purchased are &quot;restricted securities&quot; under federal securities law. You may not sell, transfer, or otherwise dispose of the securities except in compliance with the registration requirements of the Securities Act and applicable state securities laws, or pursuant to an available exemption. The Company is not obligated to register these securities for resale.
+              </p>
+
+              <p className="text-cosmic-white/70 leading-relaxed mb-4">
+                <strong className="text-cosmic-white">e. Illiquidity.</strong> There is no public market for the securities and none is expected to develop. You should be prepared to hold your investment for an indefinite period. The Company has no obligation to facilitate any liquidity event.
+              </p>
+
+              <p className="text-cosmic-white/70 leading-relaxed mb-4">
+                <strong className="text-cosmic-white">f. Subscription Agreement.</strong> Your investment is governed by the Subscription Agreement and Operating Agreement, which contain additional terms, representations, and warranties. In the event of any conflict between these Terms of Service and the Subscription Agreement, the Subscription Agreement shall control.
+              </p>
+
+              <p className="text-cosmic-white/70 leading-relaxed mb-4">
+                <strong className="text-cosmic-white">g. Dispute Resolution.</strong> Any dispute arising out of or relating to an investment in the Company&apos;s securities shall be resolved by binding arbitration administered by JAMS in accordance with its Comprehensive Arbitration Rules. The arbitration shall take place in Wilmington, Delaware. Each party shall bear its own costs, except the arbitrator may award attorney&apos;s fees to the prevailing party.
+              </p>
+
+              <p className="text-cosmic-white/70 leading-relaxed mb-8">
+                <strong className="text-cosmic-white">h. Investor Representations.</strong> By investing, you represent that: (i) you are an accredited investor as defined in Rule 501 of Regulation D; (ii) you have received and reviewed all offering materials; (iii) you understand the risks involved; (iv) you are acquiring the securities for your own account and not for resale; and (v) you have sufficient knowledge and experience to evaluate the merits and risks of the investment.
+              </p>
+
+              <h2 className="font-heading text-xl tracking-wider text-cosmic-white mb-4">9. ENFORCEABILITY</h2>
 
               <p className="text-cosmic-white/70 leading-relaxed mb-8">
                 If any of the Terms or provisions contained herein are deemed to be invalid or unenforceable, the other Terms or remaining provisions shall remain valid and enforceable.
               </p>
 
-              <h2 className="font-heading text-xl tracking-wider text-cosmic-white mb-4">9. GOVERNING LAW</h2>
+              <h2 className="font-heading text-xl tracking-wider text-cosmic-white mb-4">10. GOVERNING LAW</h2>
 
               <p className="text-cosmic-white/70 leading-relaxed mb-8">
                 Your use of our Website and Our Service and any dispute arising out of such use of our Website and Our Service is subject to the laws of the State of Delaware, United States of America and applicable federal law without regard to conflicts of laws principles. The prevailing party of any such action shall recover all expenses incurred in that action, including but not limited to attorney's fees and court costs. You further agree that any dispute arising out of these Terms of Use shall be resolved individually, apart from any form of class action lawsuit.
               </p>
 
-              <h2 className="font-heading text-xl tracking-wider text-cosmic-white mb-4">10. FEEDBACK</h2>
+              <h2 className="font-heading text-xl tracking-wider text-cosmic-white mb-4">11. FEEDBACK</h2>
 
               <p className="text-cosmic-white/70 leading-relaxed">
                 While we encourage you to provide feedback, comments and questions, it is possible that we may not be able to respond to each one. You are responsible for messages, materials and the content of all submissions and it is your responsibility to ensure any said message is accurate, reliable, original and does not infringe upon the intellectual property rights of others.

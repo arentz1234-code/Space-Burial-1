@@ -24,6 +24,9 @@ export interface InvestorDocument {
   date: string;
   size: string;
   url?: string;
+  category?: "offering" | "financials" | "regulatory" | "general";
+  description?: string;
+  required?: boolean;
 }
 
 export interface CompanyUpdate {
@@ -117,14 +120,98 @@ export const defaultContent: SiteContent = {
   contactEmail: "contact@spaceburial.com",
   contactPhone: "(555) 123-4567",
   contactAddress: "123 Celestial Way, Houston, TX 77001",
-  // Investor documents
+  // Investor documents (with SEC compliance categories)
   investorDocuments: [
-    { id: "doc-1", name: "Pitch Deck — Q1 2026", type: "PDF", date: "2026-01-15", size: "4.2 MB" },
-    { id: "doc-2", name: "Financial Projections", type: "XLSX", date: "2026-01-15", size: "1.1 MB" },
-    { id: "doc-3", name: "Subscription Agreement", type: "PDF", date: "2025-06-01", size: "890 KB" },
-    { id: "doc-4", name: "Operating Agreement", type: "PDF", date: "2025-06-01", size: "1.3 MB" },
-    { id: "doc-5", name: "Cap Table — Current", type: "PDF", date: "2026-03-01", size: "320 KB" },
-    { id: "doc-6", name: "SEC Form D Filing", type: "PDF", date: "2025-06-01", size: "210 KB" },
+    // SEC Offering Documents (Required)
+    {
+      id: "doc-ppm",
+      name: "Private Placement Memorandum (PPM)",
+      type: "PDF",
+      date: "2025-06-01",
+      size: "2.4 MB",
+      category: "offering",
+      description: "Complete disclosure document for this securities offering",
+      required: true,
+    },
+    {
+      id: "doc-subscription",
+      name: "Subscription Agreement",
+      type: "PDF",
+      date: "2025-06-01",
+      size: "890 KB",
+      category: "offering",
+      description: "Investment subscription and acknowledgment of risks",
+      required: true,
+    },
+    {
+      id: "doc-questionnaire",
+      name: "Investor Questionnaire",
+      type: "PDF",
+      date: "2025-06-01",
+      size: "340 KB",
+      category: "offering",
+      description: "Accredited investor qualification questionnaire",
+      required: true,
+    },
+    {
+      id: "doc-risk",
+      name: "Risk Factors Disclosure",
+      type: "PDF",
+      date: "2025-06-01",
+      size: "520 KB",
+      category: "offering",
+      description: "Detailed risk factors associated with this investment",
+      required: true,
+    },
+    {
+      id: "doc-operating",
+      name: "Operating Agreement",
+      type: "PDF",
+      date: "2025-06-01",
+      size: "1.3 MB",
+      category: "offering",
+      description: "Company operating agreement and governance structure",
+      required: false,
+    },
+    // Regulatory Documents
+    {
+      id: "doc-formd",
+      name: "SEC Form D Filing",
+      type: "PDF",
+      date: "2025-06-01",
+      size: "210 KB",
+      category: "regulatory",
+      description: "Notice of exempt offering filed with the SEC",
+      required: false,
+    },
+    // Financial Documents
+    {
+      id: "doc-pitch",
+      name: "Pitch Deck — Q1 2026",
+      type: "PDF",
+      date: "2026-01-15",
+      size: "4.2 MB",
+      category: "financials",
+      description: "Company overview and investment opportunity",
+    },
+    {
+      id: "doc-projections",
+      name: "Financial Projections",
+      type: "XLSX",
+      date: "2026-01-15",
+      size: "1.1 MB",
+      category: "financials",
+      description: "5-year financial projections and assumptions",
+    },
+    {
+      id: "doc-captable",
+      name: "Cap Table — Current",
+      type: "PDF",
+      date: "2026-03-01",
+      size: "320 KB",
+      category: "financials",
+      description: "Current capitalization structure",
+    },
   ],
   // Company updates
   companyUpdates: [

@@ -87,24 +87,29 @@ export default function MissionStatement() {
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, delay: 0.6 }}
-          className="glass-card p-8 grid grid-cols-2 md:grid-cols-4 gap-8"
+          className="glass-card p-8"
         >
-          {stats.map((stat, i) => (
-            <motion.div
-              key={stat.label}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={isInView ? { opacity: 1, scale: 1 } : {}}
-              transition={{ duration: 0.4, delay: 0.8 + i * 0.1 }}
-              className="text-center"
-            >
-              <p className="font-heading text-3xl sm:text-4xl text-cosmic-gold mb-1">
-                {stat.value}
-              </p>
-              <p className="text-cosmic-white/40 text-xs tracking-wider uppercase">
-                {stat.label}
-              </p>
-            </motion.div>
-          ))}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            {stats.map((stat, i) => (
+              <motion.div
+                key={stat.label}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={isInView ? { opacity: 1, scale: 1 } : {}}
+                transition={{ duration: 0.4, delay: 0.8 + i * 0.1 }}
+                className="text-center"
+              >
+                <p className="font-heading text-3xl sm:text-4xl text-cosmic-gold mb-1">
+                  {stat.value}
+                </p>
+                <p className="text-cosmic-white/40 text-xs tracking-wider uppercase">
+                  {stat.label}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+          <p className="text-cosmic-white/30 text-[10px] text-center mt-6 leading-relaxed max-w-2xl mx-auto">
+            *Statistics reflect cumulative data through our partner launch providers. &quot;Mission Success Rate&quot; refers to successful orbital insertion of memorial payloads on launches we have participated in. Past performance is not indicative of future results. Launch services are subject to technical, regulatory, and scheduling factors beyond our control. All services are provided in partnership with licensed commercial launch providers.
+          </p>
         </motion.div>
       </div>
     </section>

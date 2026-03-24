@@ -17,6 +17,27 @@ export interface AdminUser extends User {
   permissions: string[];
 }
 
+// Verification status for accredited investor compliance
+export type VerificationStatus =
+  | "pending"
+  | "self_certified"
+  | "document_verified"
+  | "third_party_verified"
+  | "professional_verified";
+
+export type VerificationMethod =
+  | "document_upload"
+  | "third_party"
+  | "professional_letter";
+
+export interface VerificationDocument {
+  id: string;
+  name: string;
+  type: string;
+  uploadedAt: string;
+  status: "pending" | "verified" | "rejected";
+}
+
 export interface InvestorUser extends User {
   role: "investor";
   accredited: boolean;
@@ -27,6 +48,11 @@ export interface InvestorUser extends User {
   ndaSignature: string;
   ndaSignedDate: string;
   documents: InvestorDocument[];
+  // SEC Compliance - Accredited Investor Verification
+  verificationStatus: VerificationStatus;
+  verificationMethod?: VerificationMethod;
+  verificationDate?: string;
+  verificationDocuments?: VerificationDocument[];
 }
 
 export interface ImmortalUser extends User {
@@ -116,6 +142,19 @@ export const mockInvestors: InvestorUser[] = [
         uploadedAt: "2026-01-15",
       },
     ],
+    // SEC Compliance - Verified via document upload
+    verificationStatus: "document_verified",
+    verificationMethod: "document_upload",
+    verificationDate: "2025-06-15",
+    verificationDocuments: [
+      {
+        id: "vdoc-001",
+        name: "2024 Tax Return",
+        type: "tax_return",
+        uploadedAt: "2025-06-14",
+        status: "verified",
+      },
+    ],
   },
   {
     id: "inv-002",
@@ -145,6 +184,19 @@ export const mockInvestors: InvestorUser[] = [
         type: "agreement",
         url: "/documents/investment-agreement.pdf",
         uploadedAt: "2025-09-01",
+      },
+    ],
+    // SEC Compliance - Verified via third party service
+    verificationStatus: "third_party_verified",
+    verificationMethod: "third_party",
+    verificationDate: "2025-08-31",
+    verificationDocuments: [
+      {
+        id: "vdoc-002",
+        name: "VerifyInvestor.com Confirmation",
+        type: "third_party",
+        uploadedAt: "2025-08-31",
+        status: "verified",
       },
     ],
   },

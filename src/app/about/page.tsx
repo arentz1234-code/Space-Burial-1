@@ -446,6 +446,52 @@ export default function AboutPage() {
         </div>
       </section>
 
+      {/* Company Registration Information */}
+      <section className="relative z-10 py-16 sm:py-24 px-4 sm:px-6">
+        <div className="max-w-4xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="glass-card p-8 sm:p-10 border border-white/10"
+          >
+            <h2 className="font-heading text-lg tracking-wider text-cosmic-gold mb-6 text-center">
+              Corporate Information
+            </h2>
+            <div className="grid sm:grid-cols-2 gap-6 text-sm">
+              <div>
+                <p className="text-cosmic-white/50 text-xs uppercase tracking-wider mb-1">Legal Name</p>
+                <p className="text-cosmic-white">Spaceburial.com Corporation</p>
+              </div>
+              <div>
+                <p className="text-cosmic-white/50 text-xs uppercase tracking-wider mb-1">State of Incorporation</p>
+                <p className="text-cosmic-white">Delaware</p>
+              </div>
+              <div>
+                <p className="text-cosmic-white/50 text-xs uppercase tracking-wider mb-1">Principal Office</p>
+                <p className="text-cosmic-white">Cape Canaveral, Florida</p>
+              </div>
+              <div>
+                <p className="text-cosmic-white/50 text-xs uppercase tracking-wider mb-1">Foreign Qualification</p>
+                <p className="text-cosmic-white">Florida (Authorized Foreign Corporation)</p>
+              </div>
+              <div>
+                <p className="text-cosmic-white/50 text-xs uppercase tracking-wider mb-1">Entity Type</p>
+                <p className="text-cosmic-white">Corporation</p>
+              </div>
+              <div>
+                <p className="text-cosmic-white/50 text-xs uppercase tracking-wider mb-1">SEC Filings</p>
+                <p className="text-cosmic-white">Form D (Regulation D, Rule 506(c))</p>
+              </div>
+            </div>
+            <p className="text-cosmic-white/40 text-xs mt-6 text-center leading-relaxed">
+              For verification of corporate registration status, please consult the Delaware Division of Corporations
+              and the Florida Division of Corporations. Copies of formation documents available upon request to accredited investors.
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
       {/* Final CTA */}
       <section className="relative z-10 py-16 sm:py-32 px-4 sm:px-6">
         <motion.div

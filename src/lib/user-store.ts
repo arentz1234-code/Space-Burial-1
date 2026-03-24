@@ -3,6 +3,19 @@
 
 import { TierLevel } from "./tiers";
 
+// Verification status types (matching mock-users.ts)
+export type VerificationStatus =
+  | "pending"
+  | "self_certified"
+  | "document_verified"
+  | "third_party_verified"
+  | "professional_verified";
+
+export type VerificationMethod =
+  | "document_upload"
+  | "third_party"
+  | "professional_letter";
+
 export interface StoredUser {
   id: string;
   name: string;
@@ -18,6 +31,10 @@ export interface StoredUser {
   shares?: number;
   investment?: string;
   ndaSigned?: boolean;
+  // SEC Compliance - Accredited Investor Verification
+  verificationStatus?: VerificationStatus;
+  verificationMethod?: VerificationMethod;
+  verificationDate?: string;
 }
 
 // Default users (system accounts)
@@ -40,6 +57,9 @@ export const defaultUsers: StoredUser[] = [
     shares: 50000,
     investment: "$250,000",
     ndaSigned: true,
+    verificationStatus: "document_verified",
+    verificationMethod: "document_upload",
+    verificationDate: "2025-06-15",
   },
   {
     id: "inv-002",
@@ -51,6 +71,9 @@ export const defaultUsers: StoredUser[] = [
     shares: 20000,
     investment: "$100,000",
     ndaSigned: true,
+    verificationStatus: "third_party_verified",
+    verificationMethod: "third_party",
+    verificationDate: "2025-08-31",
   },
   {
     id: "imm-001",

@@ -3,9 +3,9 @@ import Image from "next/image";
 
 export default function Footer() {
   return (
-    <footer className="bg-space-900 border-t border-white/5 py-16">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
+    <footer className="bg-space-900 border-t border-white/5 py-10 sm:py-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 sm:gap-12">
           {/* Brand */}
           <div className="md:col-span-2">
             <Link href="/" className="inline-block mb-4">
@@ -14,7 +14,7 @@ export default function Footer() {
                 alt="Space Burial - Immortality Among the Stars"
                 width={220}
                 height={70}
-                className="h-20 sm:h-24 w-auto"
+                className="h-14 sm:h-20 md:h-24 w-auto"
               />
             </Link>
             <p className="text-cosmic-white/50 text-sm leading-relaxed max-w-sm">
@@ -56,7 +56,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-16 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4">
+        <div className="mt-10 sm:mt-16 pt-6 sm:pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-xs text-cosmic-white/30">
             &copy; {new Date().getFullYear()} Space Burial. All rights reserved.
           </p>
@@ -68,6 +68,13 @@ export default function Footer() {
               Terms of Service
             </Link>
           </div>
+        </div>
+
+        {/* Regulatory Disclaimer */}
+        <div className="mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-white/5">
+          <p className="text-[11px] sm:text-xs text-cosmic-white/20 leading-relaxed text-center max-w-4xl mx-auto">
+            Spaceburial.com Corporation is a Delaware corporation authorized to transact business in Florida. Memorial services are provided in partnership with licensed commercial launch providers operating under FAA commercial space transportation licenses. Insurance coverage is provided through third-party carriers and is subject to policy terms and conditions. Securities offered to investors are offered pursuant to Rule 506(c) of Regulation D and are available only to verified accredited investors. This website does not constitute an offer to sell or solicitation of an offer to buy securities in any jurisdiction where such offer would be unlawful.
+          </p>
         </div>
       </div>
     </footer>

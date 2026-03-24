@@ -38,6 +38,8 @@ const navItems = [
   { href: "/investor/dashboard/documents", label: "Documents", icon: FileText },
   { href: "/investor/dashboard/financials", label: "Financials", icon: DollarSign },
   { href: "/investor/dashboard/updates", label: "Updates", icon: Bell },
+  { href: "/investor/dashboard/offering", label: "Offering", icon: Briefcase },
+  { href: "/investor/dashboard/disclosures", label: "Disclosures", icon: PieChart },
 ];
 
 export default function InvestorDashboard() {
@@ -50,34 +52,35 @@ export default function InvestorDashboard() {
   const gainPercentage = ((gain / mockInvestor.investmentAmount) * 100).toFixed(1);
 
   return (
-    <div className="pt-24 pb-20 px-6">
+    <div className="pt-20 sm:pt-24 pb-12 sm:pb-20 px-4 sm:px-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 sm:mb-12">
           <div>
             <p className="font-heading text-xs tracking-[0.3em] uppercase text-cosmic-gold mb-2">
               Investor Portal
             </p>
-            <h1 className="text-3xl font-heading font-bold tracking-wider">
+            <h1 className="text-2xl sm:text-3xl font-heading font-bold tracking-wider">
               Welcome, {mockInvestor.name}
             </h1>
           </div>
-          <div className="flex gap-4 mt-4 md:mt-0">
+          {/* Navigation - horizontal scroll on mobile */}
+          <div className="flex gap-2 sm:gap-4 mt-4 md:mt-0 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 w-full md:w-auto scrollbar-hide">
             {navItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className="flex items-center gap-2 text-xs tracking-wider uppercase text-cosmic-white/50 hover:text-cosmic-gold transition-colors"
+                className="flex items-center gap-1.5 sm:gap-2 text-[10px] sm:text-xs tracking-wider uppercase text-cosmic-white/50 hover:text-cosmic-gold transition-colors whitespace-nowrap px-2 py-2 sm:px-0 sm:py-0 min-h-[44px] sm:min-h-0"
               >
-                <item.icon className="w-4 h-4" />
-                {item.label}
+                <item.icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                <span className="hidden xs:inline sm:inline">{item.label}</span>
               </Link>
             ))}
           </div>
         </div>
 
         {/* Your Investment Section */}
-        <div className="grid lg:grid-cols-3 gap-6 mb-12">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-8 sm:mb-12">
           {/* Shares Box */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -161,10 +164,10 @@ export default function InvestorDashboard() {
         </div>
 
         {/* Company Metrics Grid */}
-        <h2 className="font-heading text-sm tracking-wider text-cosmic-gold mb-4">
+        <h2 className="font-heading text-sm tracking-wider text-cosmic-gold mb-3 sm:mb-4">
           Company Performance
         </h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-8 sm:mb-12">
           {companyStats.map((m, i) => (
             <motion.div
               key={m.label}
@@ -180,13 +183,13 @@ export default function InvestorDashboard() {
           ))}
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-8">
+        <div className="grid lg:grid-cols-2 gap-4 sm:gap-8">
           {/* Revenue Chart */}
-          <div className="glass-card p-8">
+          <div className="glass-card p-4 sm:p-8">
             <h2 className="font-heading text-sm tracking-wider text-cosmic-gold mb-6">
-              Monthly Revenue — 2026
+              Monthly Revenue — 2026 (Projected)
             </h2>
-            <div className="flex items-end gap-3 h-48">
+            <div className="flex items-end gap-2 sm:gap-3 h-40 sm:h-48">
               {revenueByMonth.map((m) => {
                 const maxRev = Math.max(...revenueByMonth.map((r) => r.revenue));
                 const height = (m.revenue / maxRev) * 100;
@@ -206,10 +209,13 @@ export default function InvestorDashboard() {
                 );
               })}
             </div>
+            <p className="text-[10px] text-cosmic-white/30 mt-4 leading-relaxed">
+              FORWARD-LOOKING STATEMENTS: These projections are estimates based on current expectations and assumptions. Actual results may differ materially due to risks including market conditions, launch delays, regulatory changes, and other factors. Past performance does not guarantee future results. These statements are made pursuant to the safe harbor provisions of the Private Securities Litigation Reform Act of 1995.
+            </p>
           </div>
 
           {/* Documents */}
-          <div className="glass-card p-8">
+          <div className="glass-card p-4 sm:p-8">
             <div className="flex justify-between items-center mb-6">
               <h2 className="font-heading text-sm tracking-wider text-cosmic-gold">
                 Your Documents
@@ -249,7 +255,7 @@ export default function InvestorDashboard() {
         </div>
 
         {/* Latest Updates */}
-        <div className="glass-card p-8 mt-8">
+        <div className="glass-card p-4 sm:p-8 mt-4 sm:mt-8">
           <div className="flex justify-between items-center mb-6">
             <h2 className="font-heading text-sm tracking-wider text-cosmic-gold">
               Latest Updates

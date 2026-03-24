@@ -34,12 +34,18 @@ export async function POST(req: Request) {
       );
     }
 
-    const sessionData = {
+    // Build session data with role-specific fields
+    const sessionData: Record<string, unknown> = {
       userId: user.id,
       email: user.email,
       name: user.name,
       role: user.role,
     };
+
+    // Include verification status for investors (SEC compliance)
+    if (user.role === "investor") {
+      sessionData.verificationStatus = user.verificationStatus || "self_certified";
+    }
 
     // Set session cookie
     const cookieStore = await cookies();

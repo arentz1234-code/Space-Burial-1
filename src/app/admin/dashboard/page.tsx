@@ -105,9 +105,9 @@ export default function AdminDashboard() {
           ))}
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-8">
+        <div className="grid lg:grid-cols-2 gap-4 sm:gap-8">
           {/* Recent Activity */}
-          <div className="glass-card p-6">
+          <div className="glass-card p-4 sm:p-6">
             <h2 className="font-heading text-sm tracking-wider text-nebula-400 mb-6">
               Recent Activity
             </h2>
@@ -149,11 +149,11 @@ export default function AdminDashboard() {
           </div>
 
           {/* Quick Actions */}
-          <div className="glass-card p-6">
-            <h2 className="font-heading text-sm tracking-wider text-nebula-400 mb-6">
+          <div className="glass-card p-4 sm:p-6">
+            <h2 className="font-heading text-sm tracking-wider text-nebula-400 mb-4 sm:mb-6">
               Quick Actions
             </h2>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-3 sm:gap-4">
               <Link
                 href="/admin/dashboard/users"
                 className="p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors group"

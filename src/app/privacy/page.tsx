@@ -135,6 +135,45 @@ export default function PrivacyPolicyPage() {
                 We may use third-party companies and individuals to perform functions on our behalf. Examples include fulfilling orders, processing payments, hosting, data storage, sending postal mail and e-mail, removing repetitive information from customer lists, analyzing data, providing marketing assistance, providing search results and links (including paid listings and links), processing credit card payments, and providing customer service. We will provide such entities with access to certain information needed to perform their functions, but will take measures to ensure that they may not use it for other purposes. We share information only as described above and with third parties that are either subject to this Privacy Policy or to their own privacy policy that is at least as protective as this Privacy Policy.
               </p>
 
+              <h2 className="font-heading text-xl tracking-wider text-cosmic-white mb-4">Investor Information Privacy</h2>
+
+              <p className="text-cosmic-white/70 leading-relaxed mb-6">
+                If you apply to become an investor in Spaceburial.com Corporation, we collect additional information necessary to verify your accredited investor status and process your investment. This section applies specifically to prospective and current investors.
+              </p>
+
+              <p className="text-cosmic-white/70 leading-relaxed mb-4">
+                <strong className="text-cosmic-white">Investor Information We Collect:</strong>
+              </p>
+
+              <ul className="list-disc list-inside text-cosmic-white/70 space-y-2 mb-6 ml-4">
+                <li>Accreditation verification documents (tax returns, W-2s, bank statements, or third-party verification letters)</li>
+                <li>Investment amounts and transaction history</li>
+                <li>Subscription agreements and other investment documents you sign</li>
+                <li>Identification documents for anti-money laundering (AML) compliance</li>
+                <li>Social Security Number or Tax Identification Number for tax reporting</li>
+              </ul>
+
+              <p className="text-cosmic-white/70 leading-relaxed mb-4">
+                <strong className="text-cosmic-white">How We Use Investor Information:</strong>
+              </p>
+
+              <ul className="list-disc list-inside text-cosmic-white/70 space-y-2 mb-6 ml-4">
+                <li>To verify your status as an accredited investor as required by SEC regulations</li>
+                <li>To process and document your investment</li>
+                <li>To provide you with required investor disclosures and updates</li>
+                <li>To comply with federal and state securities laws</li>
+                <li>To file required tax documents (such as Form K-1) with the IRS</li>
+                <li>To maintain accurate capitalization records</li>
+              </ul>
+
+              <p className="text-cosmic-white/70 leading-relaxed mb-6">
+                <strong className="text-cosmic-white">Investor Information Sharing:</strong> We may share your investor information with third-party service providers who assist with accreditation verification, securities law compliance, transfer agent services, and tax preparation. We may also disclose information as required by law, including to the SEC, state securities regulators, or the IRS. We will never sell your investor information.
+              </p>
+
+              <p className="text-cosmic-white/70 leading-relaxed mb-8">
+                <strong className="text-cosmic-white">Retention of Investor Records:</strong> We retain investor records for the period required by applicable securities laws, which may be indefinitely for certain records related to securities offerings. Even if you cease to be an investor, we may be required to retain records of your investment for regulatory compliance purposes.
+              </p>
+
               <h2 className="font-heading text-xl tracking-wider text-cosmic-white mb-4">Problems or Complaints with Space Burial's Privacy Policy</h2>
 
               <p className="text-cosmic-white/70 leading-relaxed">

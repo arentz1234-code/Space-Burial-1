@@ -51,7 +51,7 @@ export default function ServicesPage() {
       <StarField />
       <div className="relative z-10">
         {/* Hero */}
-        <section className="pt-32 pb-16 px-6 text-center">
+        <section className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 text-center">
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -63,7 +63,7 @@ export default function ServicesPage() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-5xl md:text-6xl font-heading font-black mb-6"
+            className="text-3xl sm:text-5xl md:text-6xl font-heading font-black mb-4 sm:mb-6"
           >
             Choose Your <span className="text-gradient">Legacy</span>
           </motion.h1>
@@ -79,9 +79,9 @@ export default function ServicesPage() {
         </section>
 
         {/* Tier Cards */}
-        <section className="py-12 px-6">
+        <section className="py-8 sm:py-12 px-4 sm:px-6">
           <div className="max-w-6xl mx-auto">
-            <div className="grid md:grid-cols-3 gap-6">
+            <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
               {tiers.map((tier, i) => {
                 const Icon = tierIcons[tier.id];
                 return (
@@ -90,7 +90,7 @@ export default function ServicesPage() {
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.1 + i * 0.1 }}
-                    className={`relative glass-card p-8 flex flex-col ${
+                    className={`relative glass-card p-5 sm:p-8 flex flex-col ${
                       tier.highlighted
                         ? "border-2 border-cosmic-gold/50 glow-border"
                         : "border border-white/10"
@@ -315,37 +315,37 @@ export default function ServicesPage() {
             </div>
 
             {/* Mobile Card View */}
-            <div className="md:hidden space-y-4">
+            <div className="md:hidden space-y-3">
               {comparisonFeatures.map((row) => (
-                <div key={row.feature} className="glass-card p-4">
-                  <p className="text-sm font-medium text-cosmic-white mb-3">{row.feature}</p>
-                  <div className="grid grid-cols-3 gap-2 text-center">
+                <div key={row.feature} className="glass-card p-3 sm:p-4">
+                  <p className="text-xs sm:text-sm font-medium text-cosmic-white mb-2 sm:mb-3">{row.feature}</p>
+                  <div className="grid grid-cols-3 gap-1.5 sm:gap-2 text-center">
                     <div className="bg-white/5 rounded-lg py-2 px-1">
-                      <p className="text-[10px] text-nebula-400 font-heading tracking-wider mb-1">Stardust</p>
+                      <p className="text-[9px] sm:text-[10px] text-nebula-400 font-heading tracking-wider mb-1">Star</p>
                       {typeof row.stardust === "string" ? (
-                        <span className="text-cosmic-white/50 text-[10px]">{row.stardust}</span>
+                        <span className="text-cosmic-white/50 text-[9px] sm:text-[10px]">{row.stardust}</span>
                       ) : row.stardust ? (
-                        <Check className="w-4 h-4 text-nebula-400 mx-auto" />
+                        <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-nebula-400 mx-auto" />
                       ) : (
                         <span className="text-cosmic-white/20 text-xs">—</span>
                       )}
                     </div>
                     <div className="bg-white/5 rounded-lg py-2 px-1">
-                      <p className="text-[10px] text-cosmic-gold font-heading tracking-wider mb-1">Voyager</p>
+                      <p className="text-[9px] sm:text-[10px] text-cosmic-gold font-heading tracking-wider mb-1">Voy</p>
                       {typeof row.voyager === "string" ? (
-                        <span className="text-cosmic-white/50 text-[10px]">{row.voyager}</span>
+                        <span className="text-cosmic-white/50 text-[9px] sm:text-[10px]">{row.voyager}</span>
                       ) : row.voyager ? (
-                        <Check className="w-4 h-4 text-cosmic-gold mx-auto" />
+                        <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-cosmic-gold mx-auto" />
                       ) : (
                         <span className="text-cosmic-white/20 text-xs">—</span>
                       )}
                     </div>
                     <div className="bg-white/5 rounded-lg py-2 px-1">
-                      <p className="text-[10px] text-stellar-400 font-heading tracking-wider mb-1">Eternal</p>
+                      <p className="text-[9px] sm:text-[10px] text-stellar-400 font-heading tracking-wider mb-1">Eter</p>
                       {typeof row.eternal === "string" ? (
-                        <span className="text-cosmic-white/50 text-[10px]">{row.eternal}</span>
+                        <span className="text-cosmic-white/50 text-[9px] sm:text-[10px]">{row.eternal}</span>
                       ) : row.eternal ? (
-                        <Check className="w-4 h-4 text-stellar-400 mx-auto" />
+                        <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-stellar-400 mx-auto" />
                       ) : (
                         <span className="text-cosmic-white/20 text-xs">—</span>
                       )}
@@ -358,19 +358,19 @@ export default function ServicesPage() {
         </section>
 
         {/* CTA */}
-        <section className="py-20 px-6">
+        <section className="py-12 sm:py-20 px-4 sm:px-6">
           <div className="max-w-2xl mx-auto text-center">
-            <h2 className="font-heading text-3xl tracking-wider mb-4">
+            <h2 className="font-heading text-2xl sm:text-3xl tracking-wider mb-3 sm:mb-4">
               Ready to Begin?
             </h2>
-            <p className="text-cosmic-white/50 mb-8">
+            <p className="text-cosmic-white/50 text-sm sm:text-base mb-6 sm:mb-8">
               Choose your memorial tier and create an everlasting tribute among the stars.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/checkout?tier=voyager" className="btn-primary px-8 py-4">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
+              <Link href="/checkout?tier=voyager" className="btn-primary px-6 py-3 sm:px-8 sm:py-4 text-sm sm:text-base">
                 Get Started
               </Link>
-              <Link href="/contact" className="btn-secondary px-8 py-4">
+              <Link href="/contact" className="btn-secondary px-6 py-3 sm:px-8 sm:py-4 text-sm sm:text-base">
                 Talk to Our Team
               </Link>
             </div>
