@@ -58,7 +58,7 @@ export default function LoginPage() {
   return (
     <>
       <StarField />
-      <div className="relative z-10 min-h-screen flex items-center justify-center px-6">
+      <div className="relative z-10 min-h-screen flex items-center justify-center px-6 pt-24 sm:pt-28 pb-8">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
