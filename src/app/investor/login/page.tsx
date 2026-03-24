@@ -55,9 +55,9 @@ export default function InvestorLogin() {
   };
 
   return (
-    <>
+    <div className="relative min-h-screen">
       <StarField />
-      <div className="relative z-10 min-h-screen px-4 sm:px-6 pt-28 sm:pt-32 pb-12">
+      <div className="relative z-10 px-4 sm:px-6 pt-28 sm:pt-32 pb-12">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -179,6 +179,6 @@ export default function InvestorLogin() {
           </div>
         </motion.div>
       </div>
-    </>
+    </div>
   );
 }
