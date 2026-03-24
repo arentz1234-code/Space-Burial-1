@@ -276,14 +276,15 @@ export default function Navbar() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center pt-28 pb-4 px-4 sm:p-6 bg-black/80 backdrop-blur-sm overflow-y-auto"
+            className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm overflow-y-auto"
             onClick={() => setInvestorDisclaimerOpen(false)}
           >
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="w-full max-w-lg max-h-[calc(100vh-8rem)] bg-space-800 border border-white/10 rounded-2xl shadow-2xl overflow-y-auto"
+            <div className="min-h-full flex items-center justify-center p-4 py-32">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                className="w-full max-w-lg bg-space-800 border border-white/10 rounded-2xl shadow-2xl"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Header */}
@@ -362,6 +363,7 @@ export default function Navbar() {
                 </Link>
               </div>
             </motion.div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
