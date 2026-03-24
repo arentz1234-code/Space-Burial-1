@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import StarField from "@/components/shared/StarField";
-import { Lock, AlertCircle, FileText, Zap } from "lucide-react";
+import { Lock, AlertCircle, FileText, Zap, AlertTriangle } from "lucide-react";
 
 export default function InvestorLogin() {
   const router = useRouter();
@@ -57,21 +57,48 @@ export default function InvestorLogin() {
   return (
     <>
       <StarField />
-      <div className="relative z-10 min-h-screen flex items-center justify-center px-6 pt-24 sm:pt-28 pb-8">
+      <div className="relative z-10 min-h-screen px-4 sm:px-6 pt-28 sm:pt-32 pb-12">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          className="w-full max-w-md"
+          className="w-full max-w-lg mx-auto"
         >
-          <div className="text-center mb-8">
-            <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-cosmic-gold/20 flex items-center justify-center">
-              <Lock className="w-8 h-8 text-cosmic-gold" />
+          {/* SEC Disclaimer */}
+          <div className="bg-red-500/10 border border-red-500/30 rounded-2xl p-6 mb-8">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 rounded-xl bg-red-500/20 flex items-center justify-center shrink-0">
+                <AlertTriangle className="w-6 h-6 text-red-400" />
+              </div>
+              <div>
+                <h2 className="font-heading text-lg tracking-wider text-cosmic-white mb-1">
+                  Accredited Investors Only
+                </h2>
+                <p className="text-xs text-red-400 mb-4">SEC Rule 506(c) Compliance</p>
+                <p className="text-sm text-cosmic-white/70 leading-relaxed mb-4">
+                  This portal is available <strong className="text-cosmic-white">only to accredited investors</strong> as defined by SEC Rule 501 of Regulation D.
+                </p>
+                <div className="bg-white/5 rounded-xl p-4 space-y-2">
+                  <p className="text-xs font-heading tracking-wider text-cosmic-gold">REQUIREMENTS</p>
+                  <ul className="text-xs text-cosmic-white/60 space-y-1.5">
+                    <li>• Income exceeding $200,000 ($300,000 with spouse) in each of the two most recent years</li>
+                    <li>• Net worth exceeding $1,000,000, excluding primary residence</li>
+                    <li>• Certain financial professionals (Series 7, 65, or 82 license holders)</li>
+                  </ul>
+                </div>
+              </div>
             </div>
-            <h1 className="font-heading text-2xl tracking-wider mb-2">
-              Investor Portal
+          </div>
+
+          {/* Login Header */}
+          <div className="text-center mb-6">
+            <div className="w-14 h-14 mx-auto mb-3 rounded-2xl bg-cosmic-gold/20 flex items-center justify-center">
+              <Lock className="w-7 h-7 text-cosmic-gold" />
+            </div>
+            <h1 className="font-heading text-xl tracking-wider mb-1">
+              Investor Login
             </h1>
             <p className="text-cosmic-white/50 text-sm">
-              Accredited investors only. Enter your credentials.
+              Enter your credentials to access the portal
             </p>
           </div>
 
