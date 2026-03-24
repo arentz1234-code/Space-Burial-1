@@ -11,14 +11,14 @@ export default function DocumentsPage() {
 
   if (isLoading) {
     return (
-      <div className="pt-24 pb-20 px-6 min-h-screen flex items-center justify-center">
+      <div className="pt-32 pb-20 px-6 min-h-screen flex items-center justify-center">
         <div className="text-cosmic-white/50">Loading...</div>
       </div>
     );
   }
 
   return (
-    <div className="pt-24 pb-20 px-6">
+    <div className="pt-32 pb-20 px-6">
       <div className="max-w-4xl mx-auto">
         <Link
           href="/investor/dashboard"

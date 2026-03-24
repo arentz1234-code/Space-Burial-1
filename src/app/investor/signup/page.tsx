@@ -175,7 +175,7 @@ export default function InvestorSignup() {
   return (
     <>
       <StarField />
-      <div className="relative z-10 min-h-screen py-24 px-6">
+      <div className="relative z-10 min-h-screen pt-32 pb-24 px-6">
         <div className="max-w-2xl mx-auto">
           {/* Progress indicator - Now 4 steps */}
           <div className="flex items-center justify-center gap-3 mb-12">

@@ -129,7 +129,7 @@ export default function AboutPage() {
       <StarField />
 
       {/* Hero Section */}
-      <section ref={heroRef} className="relative min-h-[80vh] flex items-center justify-center px-4 sm:px-6 pt-20">
+      <section ref={heroRef} className="relative min-h-[80vh] flex items-center justify-center px-4 sm:px-6 pt-32">
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-space-900/50 to-space-900" />
 
         <motion.div

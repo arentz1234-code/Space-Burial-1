@@ -9,7 +9,7 @@ export default function SignupSuccess() {
   return (
     <>
       <StarField />
-      <div className="relative z-10 min-h-screen flex items-center justify-center px-6 py-24">
+      <div className="relative z-10 min-h-screen flex items-center justify-center px-6 pt-32 pb-24">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}

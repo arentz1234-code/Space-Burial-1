@@ -96,7 +96,7 @@ export default function OfferingDocuments() {
   const additionalDocs = offeringDocuments.filter((d) => !d.required);
 
   return (
-    <div className="pt-20 sm:pt-24 pb-12 sm:pb-20 px-4 sm:px-6">
+    <div className="pt-28 sm:pt-32 pb-12 sm:pb-20 px-4 sm:px-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 sm:mb-8">

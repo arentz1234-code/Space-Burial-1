@@ -7,7 +7,7 @@ import { ArrowLeft } from "lucide-react";
 
 export default function FinancialsPage() {
   return (
-    <div className="pt-24 pb-20 px-6">
+    <div className="pt-32 pb-20 px-6">
       <div className="max-w-4xl mx-auto">
         <Link
           href="/investor/dashboard"

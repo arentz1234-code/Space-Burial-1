@@ -373,7 +373,7 @@ export default function PublicMemorial() {
     return (
       <>
         <StarField />
-        <div className="relative z-10 min-h-screen flex items-center justify-center px-6">
+        <div className="relative z-10 min-h-screen flex items-center justify-center px-6 pt-32">
           <div className="text-center">
             <Star className="w-16 h-16 text-cosmic-white/20 mx-auto mb-6" />
             <h1 className="font-heading text-2xl tracking-wider mb-4">
@@ -391,7 +391,7 @@ export default function PublicMemorial() {
   return (
     <>
       <StarField />
-      <div className="relative z-10 min-h-screen py-24 px-6">
+      <div className="relative z-10 min-h-screen pt-32 pb-24 px-6">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
           <motion.div

@@ -9,7 +9,7 @@ export default function VerificationPending() {
   return (
     <>
       <StarField />
-      <div className="relative z-10 min-h-screen py-24 px-6">
+      <div className="relative z-10 min-h-screen pt-32 pb-24 px-6">
         <div className="max-w-2xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
