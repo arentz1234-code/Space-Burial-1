@@ -215,10 +215,10 @@ export default function InvestorSignup() {
                     <Shield className="w-8 h-8 text-cosmic-gold" />
                   </div>
                   <h1 className="font-heading text-2xl tracking-wider mb-2">
-                    Investor Application
+                    Investor Verification Request
                   </h1>
                   <p className="text-cosmic-white/50 text-sm">
-                    Join Space Burial as an accredited investor
+                    Complete verification to access offering materials
                   </p>
                 </div>
 
@@ -301,8 +301,22 @@ export default function InvestorSignup() {
                     </div>
                   </div>
 
-                  <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-                    <label className="flex items-start gap-3 cursor-pointer">
+                  <div className="bg-white/5 border border-white/10 rounded-xl p-4 space-y-4">
+                    <p className="text-xs font-heading tracking-wider text-cosmic-gold">
+                      ACCREDITED INVESTOR STATUS (SEC RULE 501)
+                    </p>
+                    <div className="text-xs text-cosmic-white/60 space-y-2">
+                      <p>You qualify as an accredited investor if you meet at least ONE of the following:</p>
+                      <ul className="list-disc list-inside space-y-1 ml-2">
+                        <li>Individual income exceeding $200,000 (or $300,000 with spouse/partner) in each of the two most recent years</li>
+                        <li>Individual or joint net worth exceeding $1,000,000, excluding primary residence</li>
+                        <li>Holder of Series 7, 65, or 82 professional license in good standing</li>
+                        <li>Director, executive officer, or general partner of the issuer</li>
+                        <li>Entity with assets exceeding $5,000,000 (not formed to acquire these securities)</li>
+                        <li>Entity in which all equity owners are accredited investors</li>
+                      </ul>
+                    </div>
+                    <label className="flex items-start gap-3 cursor-pointer pt-2 border-t border-white/10">
                       <input
                         type="checkbox"
                         checked={formData.accredited}
@@ -315,12 +329,9 @@ export default function InvestorSignup() {
                         className="mt-1 w-4 h-4 rounded border-white/20 bg-white/5 text-cosmic-gold focus:ring-cosmic-gold"
                       />
                       <span className="text-sm text-cosmic-white/70">
-                        I certify that I am an{" "}
-                        <span className="text-cosmic-gold">
-                          accredited investor
-                        </span>{" "}
-                        as defined by SEC Rule 501 of Regulation D (net worth
-                        exceeding $1M or income exceeding $200K).
+                        I certify that I qualify as an{" "}
+                        <span className="text-cosmic-gold">accredited investor</span>{" "}
+                        under at least one of the categories above as defined by SEC Rule 501 of Regulation D. I understand that my status will be verified.
                       </span>
                     </label>
                   </div>

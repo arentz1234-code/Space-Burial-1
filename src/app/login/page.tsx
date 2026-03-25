@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import StarField from "@/components/shared/StarField";
-import { Rocket, AlertCircle, Sparkles, Zap } from "lucide-react";
+import { Rocket, AlertCircle } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -29,13 +29,12 @@ export default function LoginPage() {
       const data = await res.json();
 
       if (res.ok && data.redirect) {
-        // Refresh to ensure cookie is recognized, then navigate
         router.refresh();
         router.push(data.redirect);
       } else if (data.error === "NDA_REQUIRED") {
-        setError("Please sign the NDA before accessing your account.");
+        setError("Please complete your account setup before accessing your account.");
       } else {
-        setError("Invalid credentials. Use the demo buttons below.");
+        setError("Invalid credentials. Please check your email and password.");
       }
     } catch {
       setError("Something went wrong. Please try again.");
@@ -44,21 +43,10 @@ export default function LoginPage() {
     }
   };
 
-  const loadCredentials = (type: "admin" | "immortal") => {
-    if (type === "admin") {
-      setEmail("admin@spaceburial.com");
-      setPassword("admin123");
-    } else {
-      setEmail("eternal@example.com");
-      setPassword("eternal123");
-    }
-    setError("");
-  };
-
   return (
     <>
       <StarField />
-      <div className="relative z-10 min-h-screen flex items-center justify-center px-6 pt-24 sm:pt-28 pb-8">
+      <div className="relative z-10 min-h-screen flex items-center justify-center px-6 pt-32 pb-8">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -72,7 +60,7 @@ export default function LoginPage() {
               Welcome Back
             </h1>
             <p className="text-cosmic-white/50 text-sm">
-              Sign in to access your Space Burial account
+              Sign in to access your Space Burial memorial account
             </p>
           </div>
 
@@ -108,7 +96,7 @@ export default function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-cosmic-white focus:outline-none focus:border-nebula-500 transition-colors"
-                placeholder="••••••••"
+                placeholder="Enter your password"
               />
             </div>
 
@@ -120,41 +108,25 @@ export default function LoginPage() {
               {loading ? "Signing in..." : "Sign In"}
             </button>
 
-            {/* Demo credentials section */}
-            <div className="border-t border-white/10 pt-6">
-              <p className="text-center text-xs text-cosmic-white/30 mb-4">
-                Demo Accounts
-              </p>
-              <div className="grid grid-cols-2 gap-3">
-                <button
-                  type="button"
-                  onClick={() => loadCredentials("admin")}
-                  className="flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-cosmic-gold/10 border border-cosmic-gold/30 text-cosmic-gold text-xs font-heading tracking-wider hover:bg-cosmic-gold/20 transition-colors"
-                >
-                  <Sparkles className="w-4 h-4" />
-                  Admin
-                </button>
-                <button
-                  type="button"
-                  onClick={() => loadCredentials("immortal")}
-                  className="flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-nebula-500/10 border border-nebula-500/30 text-nebula-400 text-xs font-heading tracking-wider hover:bg-nebula-500/20 transition-colors"
-                >
-                  <Rocket className="w-4 h-4" />
-                  Immortal
-                </button>
-              </div>
-              <p className="text-center text-xs text-cosmic-white/30 mt-3">
-                Click to auto-fill demo credentials
-              </p>
+            <div className="text-center">
+              <Link
+                href="/contact"
+                className="text-xs text-cosmic-white/40 hover:text-cosmic-white/60 transition-colors"
+              >
+                Forgot your password? Contact support
+              </Link>
             </div>
           </form>
 
-          <div className="mt-6 text-center">
+          <div className="mt-6 text-center space-y-2">
+            <p className="text-xs text-cosmic-white/40">
+              This portal is for memorial account holders only.
+            </p>
             <Link
-              href="/investor/login"
+              href="/checkout"
               className="text-sm text-nebula-400 hover:text-nebula-300 transition-colors"
             >
-              Investor? Login here &rarr;
+              Reserve your memorial
             </Link>
           </div>
         </motion.div>

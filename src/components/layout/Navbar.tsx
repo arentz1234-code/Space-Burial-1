@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Menu, X, User, LogOut, LayoutDashboard, ChevronDown, Shield } from "lucide-react";
+import { Menu, X, User, LogOut, LayoutDashboard, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -155,22 +155,13 @@ export default function Navbar() {
                   </AnimatePresence>
                 </div>
               ) : (
-                /* Not Logged In */
-                <>
-                  <Link
-                    href="/login"
-                    className="text-xs tracking-wider uppercase text-cosmic-white/40 hover:text-cosmic-gold transition-colors"
-                  >
-                    Login
-                  </Link>
-                  <Link
-                    href="/investor/login"
-                    className="text-xs tracking-wider uppercase text-cosmic-white/40 hover:text-cosmic-gold transition-colors flex items-center gap-1"
-                  >
-                    <Shield className="w-3 h-3" />
-                    Investors
-                  </Link>
-                </>
+                /* Not Logged In - Memorial account login only */
+                <Link
+                  href="/login"
+                  className="text-xs tracking-wider uppercase text-cosmic-white/40 hover:text-cosmic-gold transition-colors"
+                >
+                  Account
+                </Link>
               )}
             </>
           )}
@@ -241,25 +232,15 @@ export default function Navbar() {
                 </Link>
               ))}
 
-              {/* Login Links (Mobile - only when not logged in) */}
+              {/* Login Link (Mobile - only when not logged in) */}
               {!isLoggedIn && (
-                <>
-                  <Link
-                    href="/login"
-                    onClick={() => setMobileOpen(false)}
-                    className="text-sm text-cosmic-white/40 hover:text-cosmic-gold"
-                  >
-                    Login
-                  </Link>
-                  <Link
-                    href="/investor/login"
-                    onClick={() => setMobileOpen(false)}
-                    className="text-sm text-cosmic-white/40 hover:text-cosmic-gold flex items-center gap-2"
-                  >
-                    <Shield className="w-4 h-4" />
-                    Investor Portal
-                  </Link>
-                </>
+                <Link
+                  href="/login"
+                  onClick={() => setMobileOpen(false)}
+                  className="text-sm text-cosmic-white/40 hover:text-cosmic-gold"
+                >
+                  Account Login
+                </Link>
               )}
             </div>
           </motion.div>

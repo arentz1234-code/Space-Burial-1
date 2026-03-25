@@ -65,13 +65,16 @@ export default function CTASection() {
           className="mt-16 pt-10 border-t border-white/5"
         >
           <p className="text-cosmic-white/30 text-xs tracking-wider uppercase mb-4">
-            Trusted By Families Nationwide
+            Service Credentials
           </p>
           <div className="flex flex-wrap justify-center gap-8 text-cosmic-white/20">
-            <span className="font-heading text-sm tracking-wider">NASA Certified</span>
-            <span className="font-heading text-sm tracking-wider">BBB Accredited</span>
-            <span className="font-heading text-sm tracking-wider">Licensed & Insured</span>
+            <span className="font-heading text-sm tracking-wider">FAA Licensed Partners*</span>
+            <span className="font-heading text-sm tracking-wider">Fully Insured</span>
+            <span className="font-heading text-sm tracking-wider">U.S. Based</span>
           </div>
+          <p className="text-cosmic-white/20 text-[10px] mt-4 max-w-md mx-auto">
+            *Memorial services provided through partnerships with FAA-licensed commercial launch providers.
+          </p>
         </motion.div>
       </motion.div>
     </section>
