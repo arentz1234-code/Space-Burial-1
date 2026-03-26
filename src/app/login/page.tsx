@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import StarField from "@/components/shared/StarField";
-import { Rocket, AlertCircle } from "lucide-react";
+import { Rocket, AlertCircle, Sparkles, Shield } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -13,6 +13,20 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const loadCredentials = (type: "admin" | "immortal" | "investor") => {
+    if (type === "admin") {
+      setEmail("admin@spaceburial.com");
+      setPassword("admin123");
+    } else if (type === "immortal") {
+      setEmail("eternal@example.com");
+      setPassword("eternal123");
+    } else {
+      setEmail("demo@spaceburial.com");
+      setPassword("investor123");
+    }
+    setError("");
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -108,13 +122,40 @@ export default function LoginPage() {
               {loading ? "Signing in..." : "Sign In"}
             </button>
 
-            <div className="text-center">
-              <Link
-                href="/contact"
-                className="text-xs text-cosmic-white/40 hover:text-cosmic-white/60 transition-colors"
-              >
-                Forgot your password? Contact support
-              </Link>
+            {/* Demo Accounts */}
+            <div className="border-t border-white/10 pt-6">
+              <p className="text-center text-xs text-cosmic-white/30 mb-4">
+                Demo Accounts
+              </p>
+              <div className="grid grid-cols-3 gap-2">
+                <button
+                  type="button"
+                  onClick={() => loadCredentials("admin")}
+                  className="flex flex-col items-center gap-1 py-3 px-2 rounded-xl bg-nebula-500/10 border border-nebula-500/30 text-nebula-400 text-xs font-heading tracking-wider hover:bg-nebula-500/20 transition-colors"
+                >
+                  <Sparkles className="w-4 h-4" />
+                  Admin
+                </button>
+                <button
+                  type="button"
+                  onClick={() => loadCredentials("immortal")}
+                  className="flex flex-col items-center gap-1 py-3 px-2 rounded-xl bg-stellar-400/10 border border-stellar-400/30 text-stellar-400 text-xs font-heading tracking-wider hover:bg-stellar-400/20 transition-colors"
+                >
+                  <Rocket className="w-4 h-4" />
+                  Immortal
+                </button>
+                <button
+                  type="button"
+                  onClick={() => loadCredentials("investor")}
+                  className="flex flex-col items-center gap-1 py-3 px-2 rounded-xl bg-cosmic-gold/10 border border-cosmic-gold/30 text-cosmic-gold text-xs font-heading tracking-wider hover:bg-cosmic-gold/20 transition-colors"
+                >
+                  <Shield className="w-4 h-4" />
+                  Investor
+                </button>
+              </div>
+              <p className="text-center text-xs text-cosmic-white/30 mt-3">
+                Click to auto-fill credentials
+              </p>
             </div>
           </form>
 

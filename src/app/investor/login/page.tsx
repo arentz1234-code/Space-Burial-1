@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import StarField from "@/components/shared/StarField";
-import { Lock, AlertCircle, FileText, AlertTriangle, Shield, ExternalLink } from "lucide-react";
+import { Lock, AlertCircle, FileText, AlertTriangle, Shield, ExternalLink, Zap } from "lucide-react";
 
 export default function InvestorLogin() {
   const router = useRouter();
@@ -14,6 +14,13 @@ export default function InvestorLogin() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [acknowledged, setAcknowledged] = useState(false);
+
+  const loadDemoCredentials = () => {
+    setEmail("demo@spaceburial.com");
+    setPassword("investor123");
+    setAcknowledged(true);
+    setError("");
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -237,6 +244,21 @@ export default function InvestorLogin() {
               >
                 {loading ? "Signing in..." : "Access Investor Portal"}
               </button>
+
+              {/* Demo Credentials */}
+              <div className="border-t border-white/10 pt-4">
+                <button
+                  type="button"
+                  onClick={loadDemoCredentials}
+                  className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-cosmic-gold/10 border border-cosmic-gold/30 text-cosmic-gold text-sm font-heading tracking-wider hover:bg-cosmic-gold/20 transition-colors"
+                >
+                  <Zap className="w-4 h-4" />
+                  Load Demo Investor
+                </button>
+                <p className="text-center text-xs text-cosmic-white/30 mt-2">
+                  Click to auto-fill demo credentials
+                </p>
+              </div>
             </form>
 
             <div className="mt-6 pt-6 border-t border-white/10 text-center space-y-3">
