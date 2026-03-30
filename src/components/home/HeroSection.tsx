@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { ChevronDown, Rocket, Star, Shield } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 
 export default function HeroSection() {
   const scrollToContent = () => {
@@ -79,32 +79,11 @@ export default function HeroSection() {
           <span className="text-gradient">to the Stars</span>
         </motion.h1>
 
-        {/* Trust indicators */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.9, duration: 0.6 }}
-          className="flex flex-wrap justify-center gap-3 sm:gap-6 mb-8 sm:mb-10 text-cosmic-white/40"
-        >
-          <div className="flex items-center gap-2 text-xs">
-            <Rocket className="w-4 h-4" />
-            <span>Real Space Missions</span>
-          </div>
-          <div className="flex items-center gap-2 text-xs">
-            <Shield className="w-4 h-4" />
-            <span>Fully Insured</span>
-          </div>
-          <div className="flex items-center gap-2 text-xs">
-            <Star className="w-4 h-4" />
-            <span>Starting at $3,800</span>
-          </div>
-        </motion.div>
-
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.1, duration: 0.8 }}
-          className="flex flex-col sm:flex-row gap-4 justify-center"
+          transition={{ delay: 0.9, duration: 0.8 }}
+          className="flex flex-col sm:flex-row gap-4 justify-center mt-8 sm:mt-10"
         >
           <Link href="/checkout" className="btn-primary text-sm sm:text-base px-6 py-3 sm:px-8 sm:py-4">
             Reserve Your Memorial
