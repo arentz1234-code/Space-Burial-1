@@ -50,15 +50,11 @@ const contentSections = [
 ];
 
 const tierIcons: Record<TierLevel, typeof Star> = {
-  stardust: Star,
-  voyager: Rocket,
-  eternal: Crown,
+  memorial: Rocket,
 };
 
 const tierColors: Record<TierLevel, { bg: string; text: string; border: string }> = {
-  stardust: { bg: "bg-nebula-500/20", text: "text-nebula-400", border: "border-nebula-400/30" },
-  voyager: { bg: "bg-cosmic-gold/20", text: "text-cosmic-gold", border: "border-cosmic-gold/30" },
-  eternal: { bg: "bg-stellar-400/20", text: "text-stellar-400", border: "border-stellar-400/30" },
+  memorial: { bg: "bg-cosmic-gold/20", text: "text-cosmic-gold", border: "border-cosmic-gold/30" },
 };
 
 export default function AdminCMS() {
@@ -517,20 +513,18 @@ export default function AdminCMS() {
                         </div>
                       </div>
 
-                      {tier.id === "voyager" && (
-                        <div className="flex items-center gap-3 pt-4 border-t border-white/10">
-                          <input
-                            type="checkbox"
-                            id={`highlighted-${tier.id}`}
-                            checked={tier.highlighted || false}
-                            onChange={(e) => updateLocalTier(tier.id, "highlighted", e.target.checked)}
-                            className="w-4 h-4 rounded bg-white/10 border-white/20 text-cosmic-gold focus:ring-cosmic-gold"
-                          />
-                          <label htmlFor={`highlighted-${tier.id}`} className="text-sm text-cosmic-white/70">
-                            Mark as &quot;Most Popular&quot;
-                          </label>
-                        </div>
-                      )}
+                      <div className="flex items-center gap-3 pt-4 border-t border-white/10">
+                        <input
+                          type="checkbox"
+                          id={`highlighted-${tier.id}`}
+                          checked={tier.highlighted || false}
+                          onChange={(e) => updateLocalTier(tier.id, "highlighted", e.target.checked)}
+                          className="w-4 h-4 rounded bg-white/10 border-white/20 text-cosmic-gold focus:ring-cosmic-gold"
+                        />
+                        <label htmlFor={`highlighted-${tier.id}`} className="text-sm text-cosmic-white/70">
+                          Mark as featured
+                        </label>
+                      </div>
                     </motion.div>
                   );
                 })}
@@ -542,8 +536,8 @@ export default function AdminCMS() {
               <div className="space-y-6">
                 <div className="p-4 bg-stellar-400/10 rounded-xl border border-stellar-400/20 mb-6">
                   <p className="text-xs text-stellar-400 leading-relaxed">
-                    <strong>Note:</strong> These are legacy packages. The new 3-tier system (Stardust, Voyager, Eternal)
-                    is now the primary pricing structure. Edit those in the &quot;Memorial Tiers&quot; section.
+                    <strong>Note:</strong> These are legacy packages. The Space Memorial package in the &quot;Memorial Tiers&quot;
+                    section is the current pricing structure.
                   </p>
                 </div>
                 {packages.map((pkg, i) => (

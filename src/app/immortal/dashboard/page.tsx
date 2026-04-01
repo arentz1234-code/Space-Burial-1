@@ -140,9 +140,7 @@ function saveVoiceData(data: DigitalVoice): void {
 }
 
 const tierColors = {
-  stardust: { bg: "bg-nebula-500/20", text: "text-nebula-400", border: "border-nebula-500/30" },
-  voyager: { bg: "bg-cosmic-gold/20", text: "text-cosmic-gold", border: "border-cosmic-gold/30" },
-  eternal: { bg: "bg-stellar-400/20", text: "text-stellar-400", border: "border-stellar-400/30" },
+  memorial: { bg: "bg-cosmic-gold/20", text: "text-cosmic-gold", border: "border-cosmic-gold/30" },
 };
 
 export default function ImmortalDashboard() {
@@ -152,7 +150,7 @@ export default function ImmortalDashboard() {
   const [activeTab, setActiveTab] = useState<"memories" | "photos" | "video" | "voice">("memories");
   const [showAddMemory, setShowAddMemory] = useState(false);
   const [newMemory, setNewMemory] = useState({ title: "", content: "" });
-  const [userTier, setUserTierState] = useState<TierLevel>("eternal");
+  const [userTier, setUserTierState] = useState<TierLevel>("memorial");
   const [tiers, setTiers] = useState<Tier[]>(getTiers());
 
   // Upgrade modal state
@@ -227,23 +225,19 @@ export default function ImmortalDashboard() {
     }, 2000);
   };
 
-  // Get available upgrade tiers
-  const getAvailableUpgrades = () => {
-    const tierOrder: TierLevel[] = ["stardust", "voyager", "eternal"];
-    const currentIndex = tierOrder.indexOf(userTier);
-    return tierOrder.slice(currentIndex + 1);
+  // Get available upgrade tiers - with single tier, no upgrades available
+  const getAvailableUpgrades = (): TierLevel[] => {
+    return [];
   };
 
-  // Stripe payment links placeholder - replace with actual Stripe links
-  const getStripePaymentLink = (targetTier: TierLevel): string => {
-    // TODO: Replace with actual Stripe payment links
-    const stripeLinks: Record<string, string> = {
-      "stardust-to-voyager": "https://buy.stripe.com/placeholder_stardust_to_voyager",
-      "stardust-to-eternal": "https://buy.stripe.com/placeholder_stardust_to_eternal",
-      "voyager-to-eternal": "https://buy.stripe.com/placeholder_voyager_to_eternal",
-    };
-    return stripeLinks[`${userTier}-to-${targetTier}`] || "#";
+  // Stripe payment links placeholder
+  const getStripePaymentLink = (_targetTier: TierLevel): string => {
+    return "#";
   };
+
+  // Suppress unused warning
+  void getAvailableUpgrades;
+  void getStripePaymentLink;
 
   const updatePhrase = (index: number, value: string) => {
     const newPhrases = [...voiceData.commonPhrases];
@@ -251,9 +245,10 @@ export default function ImmortalDashboard() {
     setVoiceData({ ...voiceData, commonPhrases: newPhrases });
   };
 
-  const currentTier = tiers.find((t) => t.id === userTier);
-  const hasVoyager = canAccessFeature(userTier, "voyager");
-  const hasEternal = canAccessFeature(userTier, "eternal");
+  const currentTier = tiers[0]; // Single tier
+  // All features available in single tier
+  const hasVoyager = true;
+  const hasEternal = true;
 
   const memorialUrl = `https://spaceburial.com/memorial/${mockImmortal.memorialSlug}`;
 
@@ -322,42 +317,11 @@ export default function ImmortalDashboard() {
                 </h2>
               </div>
             </div>
-            <div className="flex items-center gap-4">
-              {userTier !== "eternal" && (
-                <button
-                  onClick={() => setShowUpgradeModal(true)}
-                  className="btn-primary flex items-center gap-2 text-sm"
-                >
-                  <ArrowUpRight className="w-4 h-4" />
-                  Upgrade Package
-                </button>
-              )}
-              <div className="text-right">
-                <p className="text-cosmic-white/50 text-xs">Mission</p>
-                <p className="font-heading tracking-wider text-sm">
-                  {mockImmortal.missionName}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Demo tier switcher */}
-          <div className="mt-4 pt-4 border-t border-white/10">
-            <p className="text-xs text-cosmic-white/30 mb-2">Demo: Switch tier to test features</p>
-            <div className="flex gap-2">
-              {(["stardust", "voyager", "eternal"] as TierLevel[]).map((tier) => (
-                <button
-                  key={tier}
-                  onClick={() => handleDemoTierChange(tier)}
-                  className={`px-3 py-1 rounded-lg text-xs font-heading tracking-wider transition-colors ${
-                    userTier === tier
-                      ? `${tierColors[tier].bg} ${tierColors[tier].text}`
-                      : "bg-white/5 text-cosmic-white/50 hover:bg-white/10"
-                  }`}
-                >
-                  {tier}
-                </button>
-              ))}
+            <div className="text-right">
+              <p className="text-cosmic-white/50 text-xs">Mission</p>
+              <p className="font-heading tracking-wider text-sm">
+                {mockImmortal.missionName}
+              </p>
             </div>
           </div>
         </motion.div>
@@ -628,7 +592,7 @@ export default function ImmortalDashboard() {
                     Photo Gallery
                   </h3>
                   <p className="text-xs text-cosmic-white/50 mt-1">
-                    {userTier === "stardust" ? "Up to 20 photos" : userTier === "voyager" ? "Up to 50 photos" : "Unlimited photos"}
+                    Unlimited photos
                   </p>
                 </div>
                 <button className="btn-primary flex items-center gap-2 text-sm">
@@ -708,29 +672,7 @@ export default function ImmortalDashboard() {
                     </div>
                   </div>
                 </>
-              ) : (
-                <div className="text-center py-12">
-                  <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-cosmic-gold/10 flex items-center justify-center">
-                    <Lock className="w-8 h-8 text-cosmic-gold/50" />
-                  </div>
-                  <h3 className="font-heading text-xl tracking-wider mb-2">
-                    Upgrade to Voyager
-                  </h3>
-                  <p className="text-cosmic-white/50 text-sm mb-6 max-w-md mx-auto">
-                    Unlock Video Memorial, VIP Launch Access, Family Ceremony coordination, and more.
-                  </p>
-                  <button
-                    onClick={() => {
-                      setSelectedUpgrade("voyager");
-                      setShowUpgradeModal(true);
-                    }}
-                    className="btn-primary inline-flex items-center gap-2"
-                  >
-                    Upgrade for ${getUpgradePrice(userTier, "voyager").toLocaleString()}
-                    <ArrowUpRight className="w-4 h-4" />
-                  </button>
-                </div>
-              )}
+              ) : null}
             </>
           )}
 
@@ -908,222 +850,12 @@ export default function ImmortalDashboard() {
                     </p>
                   </div>
                 </>
-              ) : (
-                <div className="text-center py-12">
-                  <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-stellar-400/10 flex items-center justify-center">
-                    <Lock className="w-8 h-8 text-stellar-400/50" />
-                  </div>
-                  <h3 className="font-heading text-xl tracking-wider mb-2">
-                    Upgrade to Eternal
-                  </h3>
-                  <p className="text-cosmic-white/50 text-sm mb-6 max-w-md mx-auto">
-                    Unlock the Digital Voice feature, allowing visitors to have meaningful
-                    conversations with your loved one&apos;s memory through AI.
-                  </p>
-                  <button
-                    onClick={() => {
-                      setSelectedUpgrade("eternal");
-                      setShowUpgradeModal(true);
-                    }}
-                    className="btn-primary inline-flex items-center gap-2"
-                  >
-                    Upgrade for ${getUpgradePrice(userTier, "eternal").toLocaleString()}
-                    <ArrowUpRight className="w-4 h-4" />
-                  </button>
-                </div>
-              )}
+              ) : null}
             </>
           )}
         </motion.div>
       </div>
 
-      {/* Upgrade Modal */}
-      {showUpgradeModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
-          {/* Backdrop */}
-          <div
-            className="absolute inset-0 bg-space-black/80 backdrop-blur-sm"
-            onClick={() => !upgradeProcessing && setShowUpgradeModal(false)}
-          />
-
-          {/* Modal */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="relative w-full max-w-2xl glass-card p-8"
-          >
-            {upgradeSuccess ? (
-              // Success State
-              <div className="text-center py-8">
-                <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-green-500/20 flex items-center justify-center">
-                  <Check className="w-10 h-10 text-green-400" />
-                </div>
-                <h2 className="font-heading text-2xl tracking-wider mb-2">
-                  Upgrade Complete!
-                </h2>
-                <p className="text-cosmic-white/60">
-                  Your package has been upgraded. Enjoy your new features!
-                </p>
-              </div>
-            ) : upgradeProcessing ? (
-              // Processing State
-              <div className="text-center py-12">
-                <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-cosmic-gold/20 flex items-center justify-center animate-pulse">
-                  <Sparkles className="w-8 h-8 text-cosmic-gold" />
-                </div>
-                <h2 className="font-heading text-xl tracking-wider mb-2">
-                  Processing Upgrade...
-                </h2>
-                <p className="text-cosmic-white/50 text-sm">
-                  Please wait while we activate your new features
-                </p>
-              </div>
-            ) : (
-              // Selection State
-              <>
-                <div className="flex justify-between items-start mb-6">
-                  <div>
-                    <h2 className="font-heading text-2xl tracking-wider mb-1">
-                      Upgrade Your Package
-                    </h2>
-                    <p className="text-cosmic-white/50 text-sm">
-                      Unlock more features for your memorial
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => setShowUpgradeModal(false)}
-                    className="p-2 hover:bg-white/10 rounded-lg transition-colors text-cosmic-white/50"
-                  >
-                    <span className="text-xl">&times;</span>
-                  </button>
-                </div>
-
-                {/* Current Tier */}
-                <div className="bg-white/5 rounded-xl p-4 mb-6">
-                  <p className="text-xs text-cosmic-white/50 uppercase tracking-wider mb-1">
-                    Current Package
-                  </p>
-                  <div className="flex items-center gap-3">
-                    <div className={`w-10 h-10 rounded-xl ${tierColors[userTier].bg} flex items-center justify-center`}>
-                      <Crown className={`w-5 h-5 ${tierColors[userTier].text}`} />
-                    </div>
-                    <div>
-                      <p className={`font-heading tracking-wider ${tierColors[userTier].text}`}>
-                        {tiers.find(t => t.id === userTier)?.name}
-                      </p>
-                      <p className="text-xs text-cosmic-white/50">
-                        ${tiers.find(t => t.id === userTier)?.price.toLocaleString()}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Available Upgrades */}
-                <div className="space-y-4 mb-6">
-                  <p className="text-xs text-cosmic-white/50 uppercase tracking-wider">
-                    Available Upgrades
-                  </p>
-                  {getAvailableUpgrades().map((tierId) => {
-                    const tier = tiers.find(t => t.id === tierId);
-                    if (!tier) return null;
-                    const upgradePrice = getUpgradePrice(userTier, tierId);
-                    const isSelected = selectedUpgrade === tierId;
-
-                    return (
-                      <button
-                        key={tierId}
-                        onClick={() => setSelectedUpgrade(tierId)}
-                        className={`w-full text-left glass-card p-4 transition-all ${
-                          isSelected
-                            ? `border-2 ${tierColors[tierId].border} ${tierColors[tierId].bg}`
-                            : "border border-white/10 hover:border-white/20"
-                        }`}
-                      >
-                        <div className="flex items-start justify-between">
-                          <div className="flex items-center gap-3">
-                            <div className={`w-12 h-12 rounded-xl ${tierColors[tierId].bg} flex items-center justify-center`}>
-                              <Crown className={`w-6 h-6 ${tierColors[tierId].text}`} />
-                            </div>
-                            <div>
-                              <p className={`font-heading tracking-wider ${tierColors[tierId].text}`}>
-                                {tier.name}
-                              </p>
-                              <p className="text-xs text-cosmic-white/50">{tier.tagline}</p>
-                            </div>
-                          </div>
-                          <div className="text-right">
-                            <p className={`font-heading text-lg ${tierColors[tierId].text}`}>
-                              +${upgradePrice.toLocaleString()}
-                            </p>
-                            <p className="text-xs text-cosmic-white/40">to upgrade</p>
-                          </div>
-                        </div>
-
-                        {/* Features Preview */}
-                        <div className="mt-4 pt-4 border-t border-white/10">
-                          <p className="text-xs text-cosmic-white/50 mb-2">New features you&apos;ll unlock:</p>
-                          <div className="grid grid-cols-2 gap-2">
-                            {tier.features.slice(0, 4).map((feature, i) => (
-                              <div key={i} className="flex items-center gap-2 text-xs text-cosmic-white/70">
-                                <Check className={`w-3 h-3 ${tierColors[tierId].text}`} />
-                                <span className="truncate">{feature}</span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      </button>
-                    );
-                  })}
-                </div>
-
-                {/* Payment Section */}
-                {selectedUpgrade && (
-                  <div className="border-t border-white/10 pt-6">
-                    <div className="flex items-center justify-between mb-4">
-                      <div>
-                        <p className="text-cosmic-white/50 text-sm">Upgrade to {tiers.find(t => t.id === selectedUpgrade)?.name}</p>
-                        <p className="font-heading text-2xl text-cosmic-gold">
-                          ${getUpgradePrice(userTier, selectedUpgrade).toLocaleString()}
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Stripe Payment Link Button */}
-                    <div className="space-y-3">
-                      <a
-                        href={getStripePaymentLink(selectedUpgrade)}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="w-full btn-primary flex items-center justify-center gap-2 py-4"
-                        onClick={(e) => {
-                          // For demo: prevent navigation and simulate upgrade
-                          e.preventDefault();
-                          handleUpgradeComplete(selectedUpgrade);
-                        }}
-                      >
-                        <CreditCard className="w-5 h-5" />
-                        Pay with Stripe
-                      </a>
-                      <p className="text-xs text-cosmic-white/40 text-center">
-                        Secure payment powered by Stripe. You&apos;ll be redirected to complete payment.
-                      </p>
-                    </div>
-
-                    {/* Payment Link Info for Admin */}
-                    <div className="mt-4 p-3 bg-stellar-400/10 rounded-lg border border-stellar-400/20">
-                      <p className="text-xs text-stellar-400">
-                        <strong>Note:</strong> Replace the placeholder Stripe links in{" "}
-                        <code className="bg-white/10 px-1 rounded">getStripePaymentLink()</code>{" "}
-                        with your actual Stripe Payment Links.
-                      </p>
-                    </div>
-                  </div>
-                )}
-              </>
-            )}
-          </motion.div>
-        </div>
-      )}
     </div>
   );
 }

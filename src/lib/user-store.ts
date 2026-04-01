@@ -82,7 +82,7 @@ export const defaultUsers: StoredUser[] = [
     role: "immortal",
     status: "active",
     joinDate: "2025-11-01",
-    tier: "eternal",
+    tier: "memorial",
     honoreeName: "Robert J. Starfield",
   },
   {
@@ -92,7 +92,7 @@ export const defaultUsers: StoredUser[] = [
     role: "immortal",
     status: "active",
     joinDate: "2026-01-10",
-    tier: "voyager",
+    tier: "memorial",
     honoreeName: "Thomas Martinez",
   },
 ];

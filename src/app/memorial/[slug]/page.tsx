@@ -62,7 +62,7 @@ const mockMemorials: Record<
     launchDate: "2026-09-15T14:00:00Z",
     missionName: "Celestial Voyager VII",
     packageType: "Eternal Memorial",
-    tier: "eternal",
+    tier: "memorial",
     bio: "Robert J. Starfield (1952-2025) was a beloved father, husband, and amateur astronomer. His passion for the cosmos inspired everyone around him. Robert spent 30 years teaching astronomy at the local community college, introducing thousands of students to the wonders of the universe. Now, he embarks on his final journey among the stars he loved so dearly.",
     memories: [
       {
@@ -92,7 +92,7 @@ const mockMemorials: Record<
     launchDate: "2026-06-21T10:30:00Z",
     missionName: "Aurora Mission III",
     packageType: "Voyager Memorial",
-    tier: "voyager",
+    tier: "memorial",
     bio: "Maria Elena Martinez (1940-2025) was the heart of her family. Her garden was her sanctuary, and she always said the flowers reached toward the heavens. Now she will too.",
     memories: [
       {
@@ -271,28 +271,12 @@ export default function PublicMemorial() {
   const memorialTier = memorial ? tiers.find((t) => t.id === memorial.tier) : null;
 
   // Get tier styling
-  const getTierColor = (tier: TierLevel) => {
-    switch (tier) {
-      case "eternal":
-        return { bg: "bg-stellar-400/20", text: "text-stellar-400", border: "border-stellar-400/30" };
-      case "voyager":
-        return { bg: "bg-cosmic-gold/20", text: "text-cosmic-gold", border: "border-cosmic-gold/30" };
-      case "stardust":
-      default:
-        return { bg: "bg-nebula-400/20", text: "text-nebula-400", border: "border-nebula-400/30" };
-    }
+  const getTierColor = (_tier: TierLevel) => {
+    return { bg: "bg-cosmic-gold/20", text: "text-cosmic-gold", border: "border-cosmic-gold/30" };
   };
 
-  const getTierIcon = (tier: TierLevel) => {
-    switch (tier) {
-      case "eternal":
-        return Crown;
-      case "voyager":
-        return Rocket;
-      case "stardust":
-      default:
-        return Star;
-    }
+  const getTierIcon = (_tier: TierLevel) => {
+    return Rocket;
   };
 
   // Load voice data

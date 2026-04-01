@@ -6,13 +6,7 @@ import { motion } from "framer-motion";
 import StarField from "@/components/shared/StarField";
 import { getTiers, Tier, TierLevel, setUserTier } from "@/lib/tiers";
 import { addUser } from "@/lib/user-store";
-import { Check, CreditCard, Star, Rocket, Crown, Loader2, Shield, CheckCircle, ExternalLink } from "lucide-react";
-
-const tierIcons = {
-  stardust: Star,
-  voyager: Rocket,
-  eternal: Crown,
-};
+import { Check, CreditCard, Rocket, Loader2, Shield, CheckCircle, ExternalLink } from "lucide-react";
 
 function CheckoutLoading() {
   return (
@@ -31,11 +25,9 @@ function CheckoutLoading() {
 function CheckoutContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const initialTier = (searchParams.get("tier") as TierLevel) || "voyager";
 
   const [step, setStep] = useState(1);
   const [tiers, setTiers] = useState<Tier[]>(getTiers());
-  const [selected, setSelected] = useState<TierLevel>(initialTier);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [paymentComplete, setPaymentComplete] = useState(false);
   const [formData, setFormData] = useState({
@@ -49,12 +41,8 @@ function CheckoutContent() {
   });
   const [error, setError] = useState("");
 
-  // Stripe payment links for each tier (replace with your actual Stripe links)
-  const stripeLinks: Record<TierLevel, string> = {
-    stardust: "https://buy.stripe.com/test_stardust_3800",
-    voyager: "https://buy.stripe.com/test_voyager_4800",
-    eternal: "https://buy.stripe.com/test_eternal_6800",
-  };
+  // Stripe payment link
+  const STRIPE_PAYMENT_LINK = "https://buy.stripe.com/9B66oG8jL2mvdcFcrzeUU00";
 
   useEffect(() => {
     // Load tiers on client side
@@ -68,15 +56,12 @@ function CheckoutContent() {
     return () => window.removeEventListener("tiers-updated", handleTiersUpdated);
   }, []);
 
-  useEffect(() => {
-    // Update selected tier if URL param changes
-    const tierParam = searchParams.get("tier") as TierLevel;
-    if (tierParam && ["stardust", "voyager", "eternal"].includes(tierParam)) {
-      setSelected(tierParam);
-    }
-  }, [searchParams]);
+  // Single tier - always use first (and only) tier
+  const selectedTier = tiers[0];
+  const selected: TierLevel = "memorial";
 
-  const selectedTier = tiers.find((t) => t.id === selected);
+  // Suppress unused warning
+  void searchParams;
 
   const handleStep1Submit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -98,7 +83,7 @@ function CheckoutContent() {
 
   const handlePaymentClick = () => {
     // Open Stripe payment link in new tab
-    window.open(stripeLinks[selected], "_blank");
+    window.open(STRIPE_PAYMENT_LINK, "_blank");
   };
 
   const handleConfirmPayment = async () => {
@@ -207,117 +192,33 @@ function CheckoutContent() {
 
           {step === 1 && (
           <form onSubmit={handleStep1Submit} className="space-y-8">
-            {/* Tier Selection */}
-            <div>
-              <h3 className="font-heading text-sm tracking-wider text-cosmic-gold mb-4">
-                Select Your Memorial Tier
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {tiers.map((tier) => {
-                  const Icon = tierIcons[tier.id];
-                  const isSelected = selected === tier.id;
-                  return (
-                    <button
-                      key={tier.id}
-                      type="button"
-                      onClick={() => setSelected(tier.id)}
-                      className={`relative glass-card p-6 text-left transition-all ${
-                        isSelected
-                          ? tier.id === "eternal"
-                            ? "border-2 border-stellar-400/50 glow-border"
-                            : tier.id === "voyager"
-                            ? "border-2 border-cosmic-gold/50 glow-border"
-                            : "border-2 border-nebula-400/50 glow-border"
-                          : "border border-white/10 hover:border-white/20"
-                      }`}
-                    >
-                      {tier.highlighted && (
-                        <div className="absolute -top-3 right-4">
-                          <span className="bg-cosmic-gold text-space-black text-[10px] font-heading tracking-wider px-2 py-0.5 rounded-full">
-                            Popular
-                          </span>
-                        </div>
-                      )}
-                      <div className="flex items-center gap-3 mb-3">
-                        <div
-                          className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-                            tier.id === "eternal"
-                              ? "bg-stellar-400/20"
-                              : tier.id === "voyager"
-                              ? "bg-cosmic-gold/20"
-                              : "bg-nebula-500/20"
-                          }`}
-                        >
-                          <Icon
-                            className={`w-5 h-5 ${
-                              tier.id === "eternal"
-                                ? "text-stellar-400"
-                                : tier.id === "voyager"
-                                ? "text-cosmic-gold"
-                                : "text-nebula-400"
-                            }`}
-                          />
-                        </div>
-                        <div>
-                          <h4 className="font-heading text-sm tracking-wider">{tier.name}</h4>
-                          <p className="text-xs text-cosmic-white/50">{tier.tagline}</p>
-                        </div>
-                      </div>
-                      <p className="font-heading text-2xl text-cosmic-gold mb-2">
-                        ${tier.price.toLocaleString()}
-                      </p>
-                      <p className="text-xs text-cosmic-white/50 line-clamp-2">
-                        {tier.description}
-                      </p>
-                      {isSelected && (
-                        <div className="absolute top-4 right-4">
-                          <div
-                            className={`w-6 h-6 rounded-full flex items-center justify-center ${
-                              tier.id === "eternal"
-                                ? "bg-stellar-400"
-                                : tier.id === "voyager"
-                                ? "bg-cosmic-gold"
-                                : "bg-nebula-400"
-                            }`}
-                          >
-                            <Check className="w-4 h-4 text-space-black" />
-                          </div>
-                        </div>
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Selected Tier Features */}
+            {/* Package Overview */}
             {selectedTier && (
-              <motion.div
-                key={selected}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="glass-card p-6 bg-white/[0.02]"
-              >
-                <h4 className="font-heading text-sm tracking-wider mb-4">
-                  {selectedTier.name} includes:
-                </h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+              <div className="glass-card p-6 sm:p-8 border-2 border-cosmic-gold/30">
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="w-14 h-14 rounded-2xl bg-cosmic-gold/20 flex items-center justify-center">
+                    <Rocket className="w-7 h-7 text-cosmic-gold" />
+                  </div>
+                  <div>
+                    <h3 className="font-heading text-xl tracking-wider">{selectedTier.name}</h3>
+                    <p className="text-sm text-cosmic-white/50">{selectedTier.tagline}</p>
+                  </div>
+                  <div className="ml-auto text-right">
+                    <p className="font-heading text-3xl text-cosmic-gold">
+                      ${selectedTier.price.toLocaleString()}
+                    </p>
+                  </div>
+                </div>
+                <p className="text-sm text-cosmic-white/70 mb-6">{selectedTier.description}</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {selectedTier.features.map((feature, i) => (
                     <div key={i} className="flex items-center gap-2 text-sm">
-                      <Check
-                        className={`w-4 h-4 shrink-0 ${
-                          selected === "eternal"
-                            ? "text-stellar-400"
-                            : selected === "voyager"
-                            ? "text-cosmic-gold"
-                            : "text-nebula-400"
-                        }`}
-                      />
+                      <Check className="w-4 h-4 shrink-0 text-cosmic-gold" />
                       <span className="text-cosmic-white/70">{feature}</span>
                     </div>
                   ))}
                 </div>
-              </motion.div>
+              </div>
             )}
 
             {/* Contact Details */}
@@ -460,25 +361,11 @@ function CheckoutContent() {
                 </h3>
                 <div className="flex items-center justify-between pb-4 border-b border-white/10">
                   <div className="flex items-center gap-4">
-                    <div
-                      className={`w-12 h-12 rounded-xl flex items-center justify-center ${
-                        selected === "eternal"
-                          ? "bg-stellar-400/20"
-                          : selected === "voyager"
-                          ? "bg-cosmic-gold/20"
-                          : "bg-nebula-500/20"
-                      }`}
-                    >
-                      {selected === "eternal" ? (
-                        <Crown className="w-6 h-6 text-stellar-400" />
-                      ) : selected === "voyager" ? (
-                        <Rocket className="w-6 h-6 text-cosmic-gold" />
-                      ) : (
-                        <Star className="w-6 h-6 text-nebula-400" />
-                      )}
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-cosmic-gold/20">
+                      <Rocket className="w-6 h-6 text-cosmic-gold" />
                     </div>
                     <div>
-                      <p className="font-heading tracking-wider">{selectedTier?.name} Memorial</p>
+                      <p className="font-heading tracking-wider">{selectedTier?.name}</p>
                       <p className="text-sm text-cosmic-white/50">{selectedTier?.tagline}</p>
                     </div>
                   </div>

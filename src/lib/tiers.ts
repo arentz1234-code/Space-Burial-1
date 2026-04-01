@@ -1,7 +1,7 @@
 // Memorial Tier Configuration
 // Supports admin editing via localStorage
 
-export type TierLevel = "stardust" | "voyager" | "eternal";
+export type TierLevel = "memorial";
 
 export interface Tier {
   id: TierLevel;
@@ -13,59 +13,28 @@ export interface Tier {
   highlighted?: boolean;
 }
 
-// Default tier configuration
+// Single tier configuration
 export const defaultTiers: Tier[] = [
   {
-    id: "stardust",
-    name: "Stardust",
-    tagline: "Begin the Journey",
+    id: "memorial",
+    name: "Space Memorial",
+    tagline: "Eternal Journey Among the Stars",
     price: 3800,
-    description: "The essential celestial memorial. Your loved one's ashes journey to space aboard a real rocket, with a beautiful digital memorial for family to cherish.",
+    description: "A complete celestial memorial experience. Your loved one's ashes journey to space aboard a real rocket, with a beautiful digital memorial for family to cherish forever.",
     features: [
       "Cremated remains launched to space",
       "Personalized flight certificate",
       "Digital memorial page",
-      "Photo gallery (up to 20 photos)",
+      "Photo gallery (unlimited photos)",
       "Written memories & testimonials",
       "Mission tracking updates",
       "HD launch video",
-      "Shareable memorial link",
-    ],
-  },
-  {
-    id: "voyager",
-    name: "Voyager",
-    tagline: "Journey Beyond",
-    price: 4800,
-    description: "An elevated experience with VIP launch access, a cinematic video memorial, and family ceremony coordination for a truly memorable send-off.",
-    features: [
-      "Everything in Stardust, plus:",
-      "VIP live launch viewing access",
-      "Video memorial slideshow with music",
-      "Family ceremony coordination",
-      "Custom memorial capsule engraving",
-      "Priority mission scheduling",
-      "Physical star map keepsake",
-      "Annual anniversary notifications",
-    ],
-    highlighted: true,
-  },
-  {
-    id: "eternal",
-    name: "Eternal",
-    tagline: "Forever Among the Stars",
-    price: 6800,
-    description: "The ultimate tribute. Includes our Digital Voice technology, allowing loved ones to have meaningful conversations with your memory for generations to come.",
-    features: [
-      "Everything in Voyager, plus:",
-      "Digital Voice AI companion",
-      "Personality & voice recording",
-      "Interactive chat on memorial page",
-      "Unlimited photo storage",
-      "Premium memorial design",
-      "Dedicated mission liaison",
+      "Shareable memorial link for family",
+      "Launch viewing access",
+      "Custom memorial capsule",
       "Lifetime memorial hosting",
     ],
+    highlighted: true,
   },
 ];
 
@@ -143,24 +112,24 @@ export function getUpgradePrice(currentTier: TierLevel, targetTier: TierLevel): 
 }
 
 export function canAccessFeature(userTier: TierLevel, requiredTier: TierLevel): boolean {
-  const tierOrder: TierLevel[] = ["stardust", "voyager", "eternal"];
-  return tierOrder.indexOf(userTier) >= tierOrder.indexOf(requiredTier);
+  // With single tier, all users have full access
+  return true;
 }
 
 // Storage for user's selected tier
 const TIER_STORAGE_KEY = "spaceburial_user_tier";
 
 export function getUserTier(): TierLevel {
-  if (typeof window === "undefined") return "eternal"; // Default for SSR
+  if (typeof window === "undefined") return "memorial"; // Default for SSR
   try {
     const stored = localStorage.getItem(TIER_STORAGE_KEY);
-    if (stored && ["stardust", "voyager", "eternal"].includes(stored)) {
+    if (stored && stored === "memorial") {
       return stored as TierLevel;
     }
   } catch (e) {
     console.error("Error reading tier:", e);
   }
-  return "eternal"; // Default tier (full-loaded for demo)
+  return "memorial"; // Single tier
 }
 
 export function setUserTier(tier: TierLevel): void {

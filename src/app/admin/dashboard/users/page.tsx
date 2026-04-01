@@ -35,9 +35,7 @@ const navItems = [
 ];
 
 const tierNames: Record<string, string> = {
-  stardust: "Stardust",
-  voyager: "Voyager",
-  eternal: "Eternal",
+  memorial: "Space Memorial",
 };
 
 export default function AdminUsers() {
@@ -97,25 +95,14 @@ export default function AdminUsers() {
 
   const getTierBadge = (tier?: string) => {
     if (!tier) return null;
-    const styles: Record<string, string> = {
-      stardust: "bg-nebula-500/20 text-nebula-400",
-      voyager: "bg-cosmic-gold/20 text-cosmic-gold",
-      eternal: "bg-stellar-400/20 text-stellar-400",
-    };
-    return styles[tier] || "bg-white/10 text-white";
+    return "bg-cosmic-gold/20 text-cosmic-gold";
   };
 
   const getTierIcon = (tier?: string) => {
-    switch (tier) {
-      case "stardust":
-        return <Star className="w-3 h-3" />;
-      case "voyager":
-        return <Rocket className="w-3 h-3" />;
-      case "eternal":
-        return <Crown className="w-3 h-3" />;
-      default:
-        return null;
+    if (tier === "memorial") {
+      return <Rocket className="w-3 h-3" />;
     }
+    return null;
   };
 
   // Count by role
@@ -406,15 +393,12 @@ export default function AdminUsers() {
                 <>
                   {selectedUser.tier && (
                     <div className="bg-white/5 rounded-xl p-3">
-                      <p className="text-xs text-cosmic-white/50 mb-1">Package Tier</p>
-                      <span className={`inline-flex items-center gap-2 font-heading tracking-wider ${
-                        selectedUser.tier === "stardust" ? "text-nebula-400" :
-                        selectedUser.tier === "voyager" ? "text-cosmic-gold" : "text-stellar-400"
-                      }`}>
+                      <p className="text-xs text-cosmic-white/50 mb-1">Package</p>
+                      <span className="inline-flex items-center gap-2 font-heading tracking-wider text-cosmic-gold">
                         {getTierIcon(selectedUser.tier)}
-                        {tierNames[selectedUser.tier]}
+                        {tierNames[selectedUser.tier] || "Space Memorial"}
                         <span className="text-cosmic-white/50 font-normal">
-                          (${getTiers().find(t => t.id === selectedUser.tier)?.price.toLocaleString()})
+                          (${getTiers()[0]?.price.toLocaleString()})
                         </span>
                       </span>
                     </div>
