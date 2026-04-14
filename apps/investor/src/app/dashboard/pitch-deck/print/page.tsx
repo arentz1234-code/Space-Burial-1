@@ -241,7 +241,7 @@ export default function PrintPitchDeck() {
                   {slide.features?.map((feature, i) => (
                     <div key={i} className="bg-white/5 rounded-xl p-6 border border-white/10">
                       <CheckCircle className="w-8 h-8 text-green-400 mx-auto mb-3" />
-                      <p className="text-white/80">{feature}</p>
+                      <p className="text-white/80">{typeof feature === 'string' ? feature : feature.label}</p>
                     </div>
                   ))}
                 </div>
