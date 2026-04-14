@@ -253,10 +253,15 @@ export default function PitchDeckPage() {
                 {currentSlide + 1} / {slides.length}
               </p>
             </div>
-            <button className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-xl bg-cosmic-gold/20 border border-cosmic-gold/30 text-xs sm:text-sm text-cosmic-gold hover:bg-cosmic-gold/30 transition-colors">
+            <a
+              href="/dashboard/pitch-deck/print"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-xl bg-cosmic-gold/20 border border-cosmic-gold/30 text-xs sm:text-sm text-cosmic-gold hover:bg-cosmic-gold/30 transition-colors"
+            >
               <Download className="w-4 h-4" />
               <span className="hidden sm:inline">Download PDF</span>
-            </button>
+            </a>
           </motion.div>
 
           {/* Slide Content - Swipeable */}
