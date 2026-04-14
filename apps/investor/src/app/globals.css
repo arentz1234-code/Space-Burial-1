@@ -1,0 +1,64 @@
+@import "@fontsource/inter/400.css";
+@import "@fontsource/inter/500.css";
+@import "@fontsource/inter/600.css";
+@import "@fontsource/inter/700.css";
+@import "@fontsource/orbitron/400.css";
+@import "@fontsource/orbitron/500.css";
+@import "@fontsource/orbitron/600.css";
+@import "@fontsource/orbitron/700.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-space-900 text-cosmic-white font-body antialiased;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl;
+  }
+
+  .glow-border {
+    box-shadow: 0 0 20px rgba(124, 58, 237, 0.3),
+      0 0 40px rgba(124, 58, 237, 0.1);
+  }
+
+  .text-gradient {
+    @apply bg-gradient-to-r from-nebula-400 via-stellar-400 to-cosmic-gold bg-clip-text text-transparent;
+  }
+
+  .btn-primary {
+    @apply px-8 py-4 rounded-xl font-heading text-sm tracking-widest uppercase;
+    @apply bg-gradient-to-r from-nebula-500 to-stellar-500;
+    @apply hover:from-nebula-400 hover:to-stellar-400;
+    @apply transition-all duration-300 transform hover:scale-[1.02];
+    @apply text-white shadow-lg shadow-nebula-500/25;
+  }
+
+  .btn-secondary {
+    @apply px-8 py-4 rounded-xl font-heading text-sm tracking-widest uppercase;
+    @apply border border-cosmic-white/20 text-cosmic-white;
+    @apply hover:bg-white/5 hover:border-cosmic-white/40;
+    @apply transition-all duration-300;
+  }
+
+  .btn-gold {
+    @apply px-8 py-4 rounded-xl font-heading text-sm tracking-widest uppercase;
+    @apply bg-gradient-to-r from-cosmic-gold to-cosmic-amber;
+    @apply hover:from-cosmic-amber hover:to-cosmic-gold;
+    @apply transition-all duration-300 transform hover:scale-[1.02];
+    @apply text-space-900 shadow-lg shadow-cosmic-gold/25;
+  }
+
+  .sec-banner {
+    @apply bg-red-600/90 text-white text-center py-2 px-4 text-xs font-heading tracking-wider;
+  }
+
+  .sec-disclaimer {
+    @apply text-xs text-cosmic-white/50 leading-relaxed;
+  }
+}
