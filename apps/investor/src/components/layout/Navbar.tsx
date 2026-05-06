@@ -44,14 +44,18 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-3">
-          <Image
-            src="/images/logo.png"
-            alt="Space Burial - Cape Canaveral"
-            width={56}
-            height={56}
-            className="h-14 w-14"
-            priority
-          />
+          <div className="relative">
+            {/* Glow effect behind logo */}
+            <div className="absolute inset-0 bg-gradient-to-br from-sailfish-cyan/30 via-nebula-500/20 to-cosmic-coral/30 rounded-full blur-lg scale-125" />
+            <Image
+              src="/images/logo.png"
+              alt="Sailfish Space Services"
+              width={56}
+              height={56}
+              className="relative h-14 w-14 drop-shadow-[0_0_8px_rgba(6,182,212,0.5)]"
+              priority
+            />
+          </div>
           <span className="text-xs text-cosmic-white/50 tracking-wider uppercase">Investor Portal</span>
         </Link>
 
@@ -61,31 +65,31 @@ export default function Navbar() {
             <>
               <Link
                 href="/dashboard"
-                className={`text-sm ${pathname === "/dashboard" ? "text-nebula-400" : "text-cosmic-white/70 hover:text-cosmic-white"}`}
+                className={`text-sm ${pathname === "/dashboard" ? "text-sailfish-cyan" : "text-cosmic-white/70 hover:text-cosmic-white"}`}
               >
                 Overview
               </Link>
               <Link
                 href="/dashboard/documents"
-                className={`text-sm ${pathname === "/dashboard/documents" ? "text-nebula-400" : "text-cosmic-white/70 hover:text-cosmic-white"}`}
+                className={`text-sm ${pathname === "/dashboard/documents" ? "text-sailfish-cyan" : "text-cosmic-white/70 hover:text-cosmic-white"}`}
               >
                 Documents
               </Link>
               <Link
                 href="/dashboard/financials"
-                className={`text-sm ${pathname === "/dashboard/financials" ? "text-nebula-400" : "text-cosmic-white/70 hover:text-cosmic-white"}`}
+                className={`text-sm ${pathname === "/dashboard/financials" ? "text-sailfish-cyan" : "text-cosmic-white/70 hover:text-cosmic-white"}`}
               >
                 Financials
               </Link>
               <Link
                 href="/dashboard/updates"
-                className={`text-sm ${pathname === "/dashboard/updates" ? "text-nebula-400" : "text-cosmic-white/70 hover:text-cosmic-white"}`}
+                className={`text-sm ${pathname === "/dashboard/updates" ? "text-sailfish-cyan" : "text-cosmic-white/70 hover:text-cosmic-white"}`}
               >
                 Updates
               </Link>
               <Link
                 href="/dashboard/pitch-deck"
-                className={`text-sm ${pathname === "/dashboard/pitch-deck" ? "text-nebula-400" : "text-cosmic-white/70 hover:text-cosmic-white"}`}
+                className={`text-sm ${pathname === "/dashboard/pitch-deck" ? "text-sailfish-cyan" : "text-cosmic-white/70 hover:text-cosmic-white"}`}
               >
                 Pitch Deck
               </Link>
@@ -95,8 +99,8 @@ export default function Navbar() {
               <a href="#opportunity" className="text-sm text-cosmic-white/70 hover:text-cosmic-white">
                 Opportunity
               </a>
-              <a href="#team" className="text-sm text-cosmic-white/70 hover:text-cosmic-white">
-                Team
+              <a href="#product" className="text-sm text-cosmic-white/70 hover:text-cosmic-white">
+                Product
               </a>
               <a href="#process" className="text-sm text-cosmic-white/70 hover:text-cosmic-white">
                 Process
@@ -110,7 +114,7 @@ export default function Navbar() {
           {user ? (
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-2 text-sm">
-                <User className="w-4 h-4 text-nebula-400" />
+                <User className="w-4 h-4 text-sailfish-cyan" />
                 <span className="text-cosmic-white/70">{user.name}</span>
               </div>
               <button
@@ -158,7 +162,7 @@ export default function Navbar() {
           ) : (
             <>
               <a href="#opportunity" className="block text-sm text-cosmic-white/70">Opportunity</a>
-              <a href="#team" className="block text-sm text-cosmic-white/70">Team</a>
+              <a href="#product" className="block text-sm text-cosmic-white/70">Product</a>
               <a href="#process" className="block text-sm text-cosmic-white/70">Process</a>
             </>
           )}

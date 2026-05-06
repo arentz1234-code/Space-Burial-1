@@ -12,53 +12,347 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
-    @apply bg-space-900 text-cosmic-white font-body antialiased;
+    @apply text-cosmic-white font-body antialiased;
+    background: #020617;
+    overflow-x: hidden;
   }
 }
+
+/* ========================================
+   COSMIC BACKGROUND SYSTEM
+   ======================================== */
+
+/* Base space gradient */
+.cosmic-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 120% 80% at 50% -30%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse 100% 60% at 100% 0%, rgba(139, 92, 246, 0.12) 0%, transparent 40%),
+    radial-gradient(ellipse 80% 50% at 0% 100%, rgba(236, 72, 153, 0.08) 0%, transparent 40%),
+    radial-gradient(ellipse 60% 40% at 80% 80%, rgba(6, 182, 212, 0.1) 0%, transparent 40%),
+    linear-gradient(180deg, #020617 0%, #0a0a1a 30%, #0f0f23 50%, #0a0a1a 70%, #020617 100%);
+}
+
+/* Aurora borealis effect */
+.aurora {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.aurora::before,
+.aurora::after {
+  content: '';
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  top: -50%;
+  left: -50%;
+  background:
+    conic-gradient(
+      from 180deg at 50% 50%,
+      transparent 0deg,
+      rgba(6, 182, 212, 0.08) 60deg,
+      rgba(139, 92, 246, 0.06) 120deg,
+      transparent 180deg,
+      rgba(236, 72, 153, 0.05) 240deg,
+      rgba(34, 211, 238, 0.07) 300deg,
+      transparent 360deg
+    );
+  animation: auroraRotate 60s linear infinite;
+  opacity: 0.7;
+}
+
+.aurora::after {
+  animation: auroraRotate 45s linear infinite reverse;
+  opacity: 0.5;
+  filter: blur(30px);
+}
+
+@keyframes auroraRotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Nebula clouds */
+.nebula-container {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.nebula {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  mix-blend-mode: screen;
+  animation: nebulaFloat 30s ease-in-out infinite;
+}
+
+.nebula-1 {
+  width: 800px;
+  height: 600px;
+  background: radial-gradient(ellipse, rgba(6, 182, 212, 0.25) 0%, rgba(6, 182, 212, 0.1) 30%, transparent 70%);
+  top: -20%;
+  left: -10%;
+  animation-delay: 0s;
+}
+
+.nebula-2 {
+  width: 700px;
+  height: 500px;
+  background: radial-gradient(ellipse, rgba(139, 92, 246, 0.2) 0%, rgba(168, 85, 247, 0.08) 30%, transparent 70%);
+  top: 30%;
+  right: -15%;
+  animation-delay: -10s;
+  animation-duration: 35s;
+}
+
+.nebula-3 {
+  width: 600px;
+  height: 400px;
+  background: radial-gradient(ellipse, rgba(236, 72, 153, 0.18) 0%, rgba(249, 115, 22, 0.08) 30%, transparent 70%);
+  bottom: -10%;
+  left: 20%;
+  animation-delay: -20s;
+  animation-duration: 40s;
+}
+
+.nebula-4 {
+  width: 500px;
+  height: 350px;
+  background: radial-gradient(ellipse, rgba(34, 211, 238, 0.15) 0%, rgba(59, 130, 246, 0.06) 30%, transparent 70%);
+  top: 60%;
+  left: -5%;
+  animation-delay: -5s;
+  animation-duration: 25s;
+}
+
+.nebula-5 {
+  width: 450px;
+  height: 300px;
+  background: radial-gradient(ellipse, rgba(251, 146, 60, 0.12) 0%, rgba(249, 115, 22, 0.05) 30%, transparent 70%);
+  top: 10%;
+  right: 10%;
+  animation-delay: -15s;
+  animation-duration: 32s;
+}
+
+@keyframes nebulaFloat {
+  0%, 100% {
+    transform: translate(0, 0) scale(1) rotate(0deg);
+    opacity: 0.8;
+  }
+  25% {
+    transform: translate(40px, -30px) scale(1.1) rotate(5deg);
+    opacity: 1;
+  }
+  50% {
+    transform: translate(-20px, 40px) scale(0.95) rotate(-3deg);
+    opacity: 0.7;
+  }
+  75% {
+    transform: translate(30px, 20px) scale(1.05) rotate(2deg);
+    opacity: 0.9;
+  }
+}
+
+/* Cosmic dust particles */
+.cosmic-dust {
+  position: fixed;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  background-image:
+    radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,0.3), transparent),
+    radial-gradient(1px 1px at 40% 70%, rgba(255,255,255,0.2), transparent),
+    radial-gradient(1px 1px at 50% 20%, rgba(255,255,255,0.25), transparent),
+    radial-gradient(1px 1px at 60% 50%, rgba(255,255,255,0.15), transparent),
+    radial-gradient(1px 1px at 70% 80%, rgba(255,255,255,0.2), transparent),
+    radial-gradient(1px 1px at 80% 40%, rgba(255,255,255,0.3), transparent),
+    radial-gradient(1px 1px at 90% 60%, rgba(255,255,255,0.2), transparent),
+    radial-gradient(1.5px 1.5px at 10% 90%, rgba(6, 182, 212, 0.4), transparent),
+    radial-gradient(1.5px 1.5px at 30% 10%, rgba(139, 92, 246, 0.3), transparent),
+    radial-gradient(1.5px 1.5px at 85% 25%, rgba(236, 72, 153, 0.3), transparent);
+  background-size: 550px 550px;
+  animation: dustDrift 120s linear infinite;
+}
+
+@keyframes dustDrift {
+  from { transform: translateY(0); }
+  to { transform: translateY(-550px); }
+}
+
+/* Gradient mesh overlay */
+.gradient-mesh {
+  position: fixed;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  background:
+    radial-gradient(at 0% 0%, rgba(6, 182, 212, 0.08) 0%, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(139, 92, 246, 0.06) 0%, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(236, 72, 153, 0.05) 0%, transparent 50%),
+    radial-gradient(at 0% 100%, rgba(34, 211, 238, 0.07) 0%, transparent 50%);
+  animation: meshPulse 15s ease-in-out infinite;
+}
+
+@keyframes meshPulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+/* Subtle grid for tech feel */
+.space-grid {
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(6, 182, 212, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(6, 182, 212, 0.02) 1px, transparent 1px);
+  background-size: 100px 100px;
+  mask-image:
+    radial-gradient(ellipse 80% 50% at 50% 50%, black 20%, transparent 70%);
+  animation: gridPulse 20s ease-in-out infinite;
+}
+
+@keyframes gridPulse {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.6; }
+}
+
+/* Vignette effect */
+.vignette {
+  position: fixed;
+  inset: 0;
+  z-index: 6;
+  pointer-events: none;
+  background: radial-gradient(ellipse 70% 60% at 50% 50%, transparent 30%, rgba(2, 6, 23, 0.4) 100%);
+}
+
+/* ========================================
+   COMPONENT STYLES
+   ======================================== */
 
 @layer components {
   .glass-card {
     @apply bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl;
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,0.05) inset,
+      0 20px 50px -20px rgba(0,0,0,0.5);
   }
 
   .glow-border {
-    box-shadow: 0 0 20px rgba(124, 58, 237, 0.3),
-      0 0 40px rgba(124, 58, 237, 0.1);
+    box-shadow:
+      0 0 30px rgba(6, 182, 212, 0.3),
+      0 0 60px rgba(139, 92, 246, 0.15),
+      inset 0 0 30px rgba(6, 182, 212, 0.05);
   }
 
   .text-gradient {
-    @apply bg-gradient-to-r from-nebula-400 via-stellar-400 to-cosmic-gold bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-sailfish-cyan via-nebula-400 to-cosmic-coral bg-clip-text text-transparent;
+  }
+
+  .text-gradient-vibrant {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, #22d3ee 0%, #a855f7 35%, #ec4899 65%, #f97316 100%);
   }
 
   .btn-primary {
     @apply px-8 py-4 rounded-xl font-heading text-sm tracking-widest uppercase;
-    @apply bg-gradient-to-r from-nebula-500 to-stellar-500;
-    @apply hover:from-nebula-400 hover:to-stellar-400;
+    @apply bg-gradient-to-r from-sailfish-teal via-nebula-500 to-cosmic-coral;
+    @apply hover:from-sailfish-cyan hover:via-nebula-400 hover:to-cosmic-amber;
     @apply transition-all duration-300 transform hover:scale-[1.02];
-    @apply text-white shadow-lg shadow-nebula-500/25;
+    @apply text-white shadow-lg shadow-sailfish-teal/30;
   }
 
   .btn-secondary {
     @apply px-8 py-4 rounded-xl font-heading text-sm tracking-widest uppercase;
-    @apply border border-cosmic-white/20 text-cosmic-white;
-    @apply hover:bg-white/5 hover:border-cosmic-white/40;
+    @apply border-2 border-sailfish-cyan/50 text-sailfish-cyan;
+    @apply hover:bg-sailfish-cyan/10 hover:border-sailfish-cyan;
     @apply transition-all duration-300;
   }
 
   .btn-gold {
     @apply px-8 py-4 rounded-xl font-heading text-sm tracking-widest uppercase;
-    @apply bg-gradient-to-r from-cosmic-gold to-cosmic-amber;
-    @apply hover:from-cosmic-amber hover:to-cosmic-gold;
+    @apply bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500;
+    @apply hover:from-amber-400 hover:via-orange-400 hover:to-rose-400;
     @apply transition-all duration-300 transform hover:scale-[1.02];
-    @apply text-space-900 shadow-lg shadow-cosmic-gold/25;
+    @apply text-white shadow-lg shadow-orange-500/30;
+  }
+
+  .stat-card {
+    @apply bg-gradient-to-br from-white/10 to-white/5;
+    @apply border border-white/10 rounded-2xl p-6;
+    @apply transition-all duration-300;
+    @apply hover:border-sailfish-cyan/30;
+  }
+
+  .stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(6, 182, 212, 0.15);
+  }
+
+  .trust-badge {
+    @apply flex items-center gap-2 px-4 py-2 rounded-lg;
+    @apply bg-gradient-to-r from-white/5 to-white/10;
+    @apply border border-white/10;
+    @apply transition-all duration-300;
+  }
+
+  .trust-badge:hover {
+    @apply border-sailfish-cyan/30;
+    box-shadow: 0 0 20px rgba(6, 182, 212, 0.15);
   }
 
   .sec-banner {
-    @apply bg-red-600/90 text-white text-center py-2 px-4 text-xs font-heading tracking-wider;
+    @apply bg-gradient-to-r from-rose-600 via-purple-600 to-indigo-600;
+    @apply text-white text-center py-2 px-4 text-xs font-heading tracking-wider;
   }
 
   .sec-disclaimer {
     @apply text-xs text-cosmic-white/50 leading-relaxed;
   }
+}
+
+/* ========================================
+   ANIMATIONS
+   ======================================== */
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255,255,255,0.1) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+/* Glow pulse for important elements */
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(6, 182, 212, 0.3); }
+  50% { box-shadow: 0 0 40px rgba(6, 182, 212, 0.5), 0 0 60px rgba(139, 92, 246, 0.3); }
+}
+
+.glow-pulse {
+  animation: glowPulse 3s ease-in-out infinite;
 }

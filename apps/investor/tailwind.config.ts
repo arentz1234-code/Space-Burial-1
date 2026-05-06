@@ -10,25 +10,31 @@ const config: Config = {
     extend: {
       colors: {
         space: {
-          900: "#030014",
-          800: "#0a0a2e",
-          700: "#12123a",
-          600: "#1a1a4e",
+          900: "#020617",
+          800: "#0f172a",
+          700: "#1e293b",
+          600: "#334155",
         },
         nebula: {
-          400: "#7c3aed",
-          500: "#6d28d9",
-          600: "#5b21b6",
+          400: "#c084fc",
+          500: "#a855f7",
+          600: "#9333ea",
         },
         stellar: {
-          300: "#93c5fd",
-          400: "#60a5fa",
-          500: "#3b82f6",
+          300: "#5eead4",
+          400: "#2dd4bf",
+          500: "#14b8a6",
         },
         cosmic: {
-          gold: "#f5c542",
-          amber: "#ebb175",
-          white: "#e8e6f0",
+          gold: "#fb923c",
+          coral: "#f97316",
+          amber: "#ff6b35",
+          white: "#f1f5f9",
+        },
+        sailfish: {
+          teal: "#06b6d4",
+          cyan: "#22d3ee",
+          electric: "#00d4ff",
         },
       },
       fontFamily: {
@@ -52,7 +58,8 @@ const config: Config = {
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "hero-glow": "radial-gradient(ellipse at center, rgba(124,58,237,0.15) 0%, transparent 70%)",
+        "hero-glow": "radial-gradient(ellipse at center, rgba(6,182,212,0.2) 0%, rgba(168,85,247,0.1) 50%, transparent 70%)",
+        "sailfish-gradient": "linear-gradient(135deg, #06b6d4 0%, #a855f7 50%, #f97316 100%)",
       },
     },
   },
