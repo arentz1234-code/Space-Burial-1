@@ -4,8 +4,8 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 
 export const metadata: Metadata = {
-  title: "Space Burial Investor Portal | Private Placement",
-  description: "SEC-compliant investor portal for Space Burial private placement offering. Accredited investors only.",
+  title: "Sailfish Space Services | Investor Portal",
+  description: "SEC-compliant investor portal for Sailfish Space Services private placement offering. Accredited investors only.",
 };
 
 export default function RootLayout({
