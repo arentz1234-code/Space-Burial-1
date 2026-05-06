@@ -1,0 +1,6 @@
+{
+  "buildCommand": "cd apps/investor && npm install && npm run build",
+  "outputDirectory": "apps/investor/.next",
+  "installCommand": "npm install",
+  "framework": "nextjs"
+}
